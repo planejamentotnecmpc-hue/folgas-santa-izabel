@@ -1,10 +1,10 @@
 {
     "version": 1,
     "team": [
-        { "name": "Colaborador 1", "role": "Cargo", "balance": 0, "photo": null },
-        { "name": "Colaborador 2", "role": "Cargo", "balance": 0, "photo": null },
-        { "name": "Colaborador 3", "role": "Cargo", "balance": 0, "photo": null },
-        { "name": "Colaborador 4", "role": "Cargo", "balance": 0, "photo": null }
+        { "name": "Filipe Feijó", "role": "Engenheiro de Campo", "balance": 66, "photo": "fotos/filipe.jpg" },
+        { "name": "Elisa Terres", "role": "Técnica de Segurança do Trabalho", "balance": 90, "photo": "fotos/elisa.jpg" },
+        { "name": "Tatiane Huff", "role": "Especialista Ambiental", "balance": 89, "photo": "fotos/tatiane.jpg" },
+        { "name": "Pedro Rodrigues", "role": "Engenheiro de Planejamento", "balance": 68, "photo": "fotos/pedro.jpg" }
     ],
     "folgas": []
 }
