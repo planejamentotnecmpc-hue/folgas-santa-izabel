@@ -81,22 +81,28 @@
             margin-top: 3px;
         }
         .header-right { z-index: 1; display: flex; align-items: center; gap: 16px; }
-        .btn-export {
-            font-size: 13px;
-            color: rgba(255,255,255,0.85);
-            background: rgba(99,102,241,0.25);
-            border: 1px solid rgba(99,102,241,0.4);
-            padding: 8px 16px;
+        .btn-admin {
+            font-size: 18px;
+            background: rgba(255,255,255,0.08);
+            border: 1px solid transparent;
+            padding: 6px 10px;
             border-radius: 8px;
             cursor: pointer;
-            font-family: inherit;
-            font-weight: 500;
             transition: background 0.2s, border-color 0.2s;
-            display: flex;
-            align-items: center;
-            gap: 6px;
+            line-height: 1;
         }
-        .btn-export:hover { background: rgba(99,102,241,0.4); border-color: rgba(99,102,241,0.6); }
+        .btn-admin:hover { background: rgba(255,255,255,0.15); }
+        .btn-admin.active { background: rgba(34,197,94,0.2); border-color: rgba(34,197,94,0.4); }
+        .sync-indicator {
+            font-size: 11px;
+            padding: 4px 10px;
+            border-radius: 6px;
+            font-weight: 500;
+            display: none;
+        }
+        .sync-indicator.syncing { display: inline; background: rgba(245,158,11,0.2); color: #f59e0b; }
+        .sync-indicator.synced { display: inline; background: rgba(34,197,94,0.2); color: #22c55e; }
+        .sync-indicator.error { display: inline; background: rgba(239,68,68,0.2); color: #ef4444; }
         .current-date {
             font-size: 13px;
             color: rgba(255,255,255,0.7);
@@ -779,7 +785,8 @@
         </h1>
     </div>
     <div class="header-right">
-        <button class="btn-export" onclick="exportData()" title="Baixar data.json atualizado para publicar no repositório">⬇ Exportar Dados</button>
+        <span class="sync-indicator" id="syncIndicator"></span>
+        <button class="btn-admin" id="btnAdmin" onclick="toggleAdmin()" title="Modo Admin">🔒</button>
         <div class="current-date" id="currentDate"></div>
     </div>
 </div>
@@ -896,13 +903,16 @@
 
 <script>
     // ── DATA ──
-    const STORAGE_KEY = 'folgas_santa_izabel';
-    const FOLGAS_KEY = 'folgas_santa_izabel_folgas';
+    const GITHUB_OWNER = 'planejamentotnecmpc-hue';
+    const GITHUB_REPO = 'folgas-santa-izabel';
+    const ADMIN_TOKEN_KEY = 'folgas_admin_token';
     const HOURS_PER_DAY = 8;
 
     let state = defaultState();
     let currentMonth = new Date().getMonth();
     let currentYear = new Date().getFullYear();
+    let isAdmin = false;
+    let fileSha = null;
 
     function defaultState() {
         return {
@@ -917,85 +927,124 @@
     }
 
     async function loadStateFromServer() {
-        let serverData = null;
         try {
             const resp = await fetch('data.json?t=' + Date.now());
-            if (resp.ok) serverData = await resp.json();
+            if (resp.ok) return await resp.json();
         } catch(e) {}
-
-        const localFolgas = loadLocalFolgas();
-
-        if (serverData) {
-            const serverFolgas = serverData.folgas || [];
-            const mergedIds = new Set();
-            const merged = [];
-            for (const f of serverFolgas) { merged.push(f); mergedIds.add(f.id); }
-            for (const f of localFolgas) { if (!mergedIds.has(f.id)) merged.push(f); }
-            serverData.folgas = merged;
-            return serverData;
-        }
-
-        try {
-            const saved = localStorage.getItem(STORAGE_KEY);
-            if (saved) return JSON.parse(saved);
-        } catch(e) {}
-
-        const def = defaultState();
-        def.folgas = localFolgas;
-        return def;
-    }
-
-    function loadLocalFolgas() {
-        try {
-            const saved = localStorage.getItem(FOLGAS_KEY);
-            if (saved) return JSON.parse(saved);
-        } catch(e) {}
-        return [];
+        return defaultState();
     }
 
     function saveState() {
-        localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
-        localStorage.setItem(FOLGAS_KEY, JSON.stringify(state.folgas));
+        if (isAdmin) syncToGitHub();
     }
 
-    function exportData() {
-        let hasBase64Photos = false;
-        const exportState = {
-            version: (state.version || 0) + 1,
-            team: state.team.map((p, i) => {
-                let photo = p.photo;
-                if (photo && photo.startsWith('data:')) {
-                    hasBase64Photos = true;
-                    photo = `fotos/pessoa${i + 1}.jpg`;
-                }
-                return { name: p.name, role: p.role, balance: p.balance, photo: photo };
-            }),
-            folgas: state.folgas
-        };
+    // ── ADMIN / GITHUB SYNC ──
+    function getAdminToken() {
+        return localStorage.getItem(ADMIN_TOKEN_KEY);
+    }
 
-        if (hasBase64Photos) {
-            state.team.forEach((p, i) => {
-                if (p.photo && p.photo.startsWith('data:')) {
-                    const link = document.createElement('a');
-                    link.href = p.photo;
-                    link.download = `pessoa${i + 1}.jpg`;
-                    link.click();
-                }
-            });
+    function toggleAdmin() {
+        if (isAdmin) {
+            isAdmin = false;
+            updateAdminUI();
+            showToast('Modo admin desativado.');
+            return;
         }
+        const saved = getAdminToken();
+        if (saved) {
+            isAdmin = true;
+            updateAdminUI();
+            showToast('Modo admin ativado! Alterações serão publicadas automaticamente.');
+            return;
+        }
+        const token = prompt('Cole seu GitHub Personal Access Token (fine-grained, com permissão Contents read/write neste repo):');
+        if (!token || !token.trim()) return;
+        localStorage.setItem(ADMIN_TOKEN_KEY, token.trim());
+        isAdmin = true;
+        updateAdminUI();
+        showToast('Token salvo e modo admin ativado!');
+    }
 
-        const blob = new Blob([JSON.stringify(exportState, null, 4)], { type: 'application/json' });
-        const url = URL.createObjectURL(blob);
-        const a = document.createElement('a');
-        a.href = url;
-        a.download = 'data.json';
-        a.click();
-        URL.revokeObjectURL(url);
+    function updateAdminUI() {
+        const btn = document.getElementById('btnAdmin');
+        btn.textContent = isAdmin ? '🔓' : '🔒';
+        btn.classList.toggle('active', isAdmin);
+    }
 
-        const msg = hasBase64Photos
-            ? 'data.json + fotos exportados! Coloque as fotos na pasta fotos/ do repositório e faça push.'
-            : 'data.json exportado! Substitua o arquivo no repositório e faça push.';
-        showToast(msg);
+    function setSyncStatus(status, text) {
+        const el = document.getElementById('syncIndicator');
+        el.className = 'sync-indicator ' + status;
+        el.textContent = text;
+        if (status === 'synced') setTimeout(() => { el.className = 'sync-indicator'; el.textContent = ''; }, 3000);
+    }
+
+    async function fetchFileSha() {
+        const token = getAdminToken();
+        if (!token) return null;
+        try {
+            const resp = await fetch(`https://api.github.com/repos/${GITHUB_OWNER}/${GITHUB_REPO}/contents/data.json`, {
+                headers: { 'Authorization': `Bearer ${token}`, 'Accept': 'application/vnd.github.v3+json' }
+            });
+            if (resp.ok) {
+                const data = await resp.json();
+                return data.sha;
+            }
+        } catch(e) {}
+        return null;
+    }
+
+    async function syncToGitHub() {
+        const token = getAdminToken();
+        if (!token) return;
+
+        setSyncStatus('syncing', 'Publicando...');
+
+        try {
+            if (!fileSha) fileSha = await fetchFileSha();
+
+            const exportState = {
+                team: state.team.map(p => ({
+                    name: p.name, role: p.role, balance: p.balance, photo: p.photo
+                })),
+                folgas: state.folgas
+            };
+
+            const content = btoa(unescape(encodeURIComponent(JSON.stringify(exportState, null, 4))));
+
+            const body = {
+                message: 'Atualizar folgas via painel',
+                content: content,
+                branch: 'master'
+            };
+            if (fileSha) body.sha = fileSha;
+
+            const resp = await fetch(`https://api.github.com/repos/${GITHUB_OWNER}/${GITHUB_REPO}/contents/data.json`, {
+                method: 'PUT',
+                headers: {
+                    'Authorization': `Bearer ${token}`,
+                    'Accept': 'application/vnd.github.v3+json',
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(body)
+            });
+
+            if (resp.ok) {
+                const result = await resp.json();
+                fileSha = result.content.sha;
+                setSyncStatus('synced', 'Publicado!');
+            } else {
+                const err = await resp.json();
+                if (resp.status === 409) {
+                    fileSha = null;
+                    return syncToGitHub();
+                }
+                setSyncStatus('error', 'Erro ao publicar');
+                console.error('GitHub API error:', err);
+            }
+        } catch(e) {
+            setSyncStatus('error', 'Erro de conexão');
+            console.error('Sync error:', e);
+        }
     }
 
     // ── COMPUTED ──
@@ -1440,8 +1489,10 @@
 
     // ── INIT ──
     updateDateDisplay();
+    if (getAdminToken()) { isAdmin = true; updateAdminUI(); }
     (async () => {
         state = await loadStateFromServer();
+        if (isAdmin) fileSha = await fetchFileSha();
         renderAll();
     })();
 </script>
