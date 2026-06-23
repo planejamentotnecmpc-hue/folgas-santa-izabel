@@ -314,14 +314,20 @@
             transition: width 0.5s ease;
         }
 
-        .scheduled-info {
-            display: flex;
-            justify-content: space-between;
-            font-size: 12px;
-            color: var(--text2);
-            padding: 0 4px;
+        .card-stats-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 8px;
+            margin-top: 12px;
         }
-        .scheduled-info .val { color: var(--text); font-weight: 600; }
+        .card-stat {
+            background: var(--surface2);
+            border-radius: 8px;
+            padding: 10px 8px;
+            text-align: center;
+        }
+        .card-stat-val { font-size: 18px; font-weight: 700; }
+        .card-stat-label { font-size: 10px; color: var(--text2); text-transform: uppercase; letter-spacing: 0.3px; margin-top: 2px; }
 
         /* ── CALENDAR ── */
         .calendar-section { grid-column: 1 / -1; }
@@ -979,9 +985,15 @@
                             <div class="balance-bar-fill" style="width: ${pct}%; background: ${barColors[i]}"></div>
                         </div>
                     </div>
-                    <div class="scheduled-info">
-                        <span>Agendadas: <span class="val">${folgaCount}</span></span>
-                        <span>Disponível: <span class="val" style="color: ${available >= 0 ? colors[i] : '#ef4444'}">${available}h</span></span>
+                    <div class="card-stats-grid">
+                        <div class="card-stat">
+                            <div class="card-stat-val" style="color: var(--red)">${committed}h</div>
+                            <div class="card-stat-label">Comprometido</div>
+                        </div>
+                        <div class="card-stat">
+                            <div class="card-stat-val" style="color: ${available >= 0 ? 'var(--green)' : 'var(--red)'}">${available}h</div>
+                            <div class="card-stat-label">Disponível</div>
+                        </div>
                     </div>
                 </div>
             `;
