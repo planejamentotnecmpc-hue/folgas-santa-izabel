@@ -1,10 +1,37 @@
 {
-    "version": 1,
     "team": [
-        { "name": "Filipe Feijó", "role": "Engenheiro de Campo", "balance": 66, "photo": "fotos/filipe.jpg" },
-        { "name": "Elisa Terres", "role": "Técnica de Segurança do Trabalho", "balance": 90, "photo": "fotos/elisa.jpg" },
-        { "name": "Tatiane Huff", "role": "Especialista Ambiental", "balance": 89, "photo": "fotos/tatiane.jpg" },
-        { "name": "Pedro Rodrigues", "role": "Engenheiro de Planejamento", "balance": 68, "photo": "fotos/pedro.jpg" }
+        {
+            "name": "Filipe Feijó",
+            "role": "Engenheiro de Campo",
+            "balance": 66,
+            "photo": "fotos/filipe.jpg"
+        },
+        {
+            "name": "Elisa Terres",
+            "role": "Técnica de Segurança do Trabalho",
+            "balance": 90,
+            "photo": "fotos/elisa.jpg"
+        },
+        {
+            "name": "Tatiane Huff",
+            "role": "Especialista Ambiental",
+            "balance": 89,
+            "photo": "fotos/tatiane.jpg"
+        },
+        {
+            "name": "Pedro Rodrigues",
+            "role": "Engenheiro de Planejamento",
+            "balance": 68,
+            "photo": "fotos/pedro.jpg"
+        }
     ],
-    "folgas": []
+    "folgas": [
+        {
+            "id": "mqqx146ycrm4q",
+            "personIdx": 2,
+            "startDate": "2026-07-27",
+            "endDate": "2026-07-31",
+            "note": "Folga Programada - Utilização do banco de horas"
+        }
+    ]
 }
