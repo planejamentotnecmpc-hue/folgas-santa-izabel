@@ -906,6 +906,7 @@
     const GITHUB_OWNER = 'planejamentotnecmpc-hue';
     const GITHUB_REPO = 'folgas-santa-izabel';
     const ADMIN_TOKEN_KEY = 'folgas_admin_token';
+    const CACHE_KEY = 'folgas_state_cache';
     const HOURS_PER_DAY = 8;
 
     let state = defaultState();
@@ -927,14 +928,42 @@
     }
 
     async function loadStateFromServer() {
+        const token = getAdminToken();
+        if (token) {
+            try {
+                const resp = await fetch(`https://api.github.com/repos/${GITHUB_OWNER}/${GITHUB_REPO}/contents/data.json`, {
+                    headers: { 'Authorization': `Bearer ${token}`, 'Accept': 'application/vnd.github.v3+json' }
+                });
+                if (resp.ok) {
+                    const meta = await resp.json();
+                    fileSha = meta.sha;
+                    const decoded = decodeURIComponent(escape(atob(meta.content.replace(/\n/g, ''))));
+                    const data = JSON.parse(decoded);
+                    localStorage.setItem(CACHE_KEY, JSON.stringify(data));
+                    return data;
+                }
+            } catch(e) { console.error('GitHub API load error:', e); }
+        }
+
         try {
             const resp = await fetch('data.json?t=' + Date.now());
-            if (resp.ok) return await resp.json();
+            if (resp.ok) {
+                const data = await resp.json();
+                localStorage.setItem(CACHE_KEY, JSON.stringify(data));
+                return data;
+            }
         } catch(e) {}
+
+        try {
+            const cached = localStorage.getItem(CACHE_KEY);
+            if (cached) return JSON.parse(cached);
+        } catch(e) {}
+
         return defaultState();
     }
 
     function saveState() {
+        localStorage.setItem(CACHE_KEY, JSON.stringify(state));
         if (isAdmin) syncToGitHub();
     }
 
@@ -1492,7 +1521,6 @@
     if (getAdminToken()) { isAdmin = true; updateAdminUI(); }
     (async () => {
         state = await loadStateFromServer();
-        if (isAdmin) fileSha = await fetchFileSha();
         renderAll();
     })();
 </script>
