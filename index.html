@@ -897,7 +897,7 @@
 <script>
     // ── DATA ──
     const STORAGE_KEY = 'folgas_santa_izabel';
-    const DATA_VERSION_KEY = 'folgas_data_version';
+    const FOLGAS_KEY = 'folgas_santa_izabel_folgas';
     const HOURS_PER_DAY = 8;
 
     let state = defaultState();
@@ -906,7 +906,6 @@
 
     function defaultState() {
         return {
-            version: 0,
             team: [
                 { name: 'Colaborador 1', role: 'Cargo', balance: 0, photo: null },
                 { name: 'Colaborador 2', role: 'Cargo', balance: 0, photo: null },
@@ -918,27 +917,45 @@
     }
 
     async function loadStateFromServer() {
+        let serverData = null;
         try {
             const resp = await fetch('data.json?t=' + Date.now());
-            if (resp.ok) {
-                const data = await resp.json();
-                const localVersion = parseInt(localStorage.getItem(DATA_VERSION_KEY) || '0');
-                const serverVersion = data.version || 0;
-                if (serverVersion >= localVersion) {
-                    localStorage.setItem(DATA_VERSION_KEY, String(serverVersion));
-                    return data;
-                }
-            }
+            if (resp.ok) serverData = await resp.json();
         } catch(e) {}
+
+        const localFolgas = loadLocalFolgas();
+
+        if (serverData) {
+            const serverFolgas = serverData.folgas || [];
+            const mergedIds = new Set();
+            const merged = [];
+            for (const f of serverFolgas) { merged.push(f); mergedIds.add(f.id); }
+            for (const f of localFolgas) { if (!mergedIds.has(f.id)) merged.push(f); }
+            serverData.folgas = merged;
+            return serverData;
+        }
+
         try {
             const saved = localStorage.getItem(STORAGE_KEY);
             if (saved) return JSON.parse(saved);
         } catch(e) {}
-        return defaultState();
+
+        const def = defaultState();
+        def.folgas = localFolgas;
+        return def;
+    }
+
+    function loadLocalFolgas() {
+        try {
+            const saved = localStorage.getItem(FOLGAS_KEY);
+            if (saved) return JSON.parse(saved);
+        } catch(e) {}
+        return [];
     }
 
     function saveState() {
         localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
+        localStorage.setItem(FOLGAS_KEY, JSON.stringify(state.folgas));
     }
 
     function exportData() {
