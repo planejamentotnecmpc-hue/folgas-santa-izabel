@@ -585,7 +585,7 @@
             border: 1px solid var(--border);
             border-radius: var(--radius);
             padding: 28px;
-            width: 420px;
+            width: 520px;
             max-width: 90%;
         }
         .modal h3 {
@@ -620,6 +620,76 @@
             font-weight: 600;
             cursor: pointer;
             font-family: inherit;
+        }
+
+        /* ── PERSON MODAL ── */
+        .person-modal-header {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+            margin-bottom: 20px;
+            padding-bottom: 16px;
+            border-bottom: 1px solid var(--border);
+        }
+        .person-modal-avatar {
+            width: 56px; height: 56px;
+            border-radius: 50%;
+            object-fit: cover;
+            background: var(--surface2);
+            display: flex; align-items: center; justify-content: center;
+            font-size: 28px;
+            overflow: hidden;
+            flex-shrink: 0;
+        }
+        .person-modal-avatar img { width: 100%; height: 100%; object-fit: cover; border-radius: 50%; }
+        .person-modal-name { font-size: 18px; font-weight: 700; }
+        .person-modal-role { font-size: 12px; color: var(--text2); margin-top: 2px; }
+        .person-modal-stats {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 10px;
+            margin-bottom: 20px;
+        }
+        .pm-stat {
+            background: var(--surface2);
+            border-radius: 10px;
+            padding: 12px;
+            text-align: center;
+        }
+        .pm-stat-val { font-size: 22px; font-weight: 700; }
+        .pm-stat-label { font-size: 10px; color: var(--text2); text-transform: uppercase; letter-spacing: 0.5px; margin-top: 2px; }
+        .pm-folga-list {
+            max-height: 250px;
+            overflow-y: auto;
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+        .pm-folga-list::-webkit-scrollbar { width: 4px; }
+        .pm-folga-list::-webkit-scrollbar-thumb { background: var(--border); border-radius: 4px; }
+        .pm-folga-item {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 12px 14px;
+            background: var(--surface2);
+            border-radius: 10px;
+            border-left: 3px solid;
+        }
+        .pm-folga-dates { font-size: 13px; font-weight: 600; }
+        .pm-folga-note { font-size: 11px; color: var(--text2); margin-top: 2px; }
+        .pm-folga-right { text-align: right; display: flex; align-items: center; gap: 10px; }
+        .pm-folga-days { font-size: 13px; font-weight: 600; }
+        .pm-folga-hours { font-size: 11px; color: var(--red); font-weight: 600; }
+        .pm-folga-remove {
+            background: none; border: none; color: var(--text2);
+            cursor: pointer; font-size: 14px; padding: 4px 6px;
+            border-radius: 6px; transition: background 0.15s, color 0.15s;
+        }
+        .pm-folga-remove:hover { background: var(--red-bg); color: var(--red); }
+        .pm-section-title {
+            font-size: 12px; color: var(--text2); text-transform: uppercase;
+            letter-spacing: 0.5px; font-weight: 600; margin-bottom: 10px;
         }
 
         /* ── EMPTY STATE ── */
@@ -787,7 +857,7 @@
 </div>
 
 <!-- MODAL -->
-<div class="modal-overlay" id="modalOverlay">
+<div class="modal-overlay" id="modalOverlay" onclick="if(event.target===this)closeModal()">
     <div class="modal">
         <h3 id="modalTitle">Agendar Folga</h3>
         <div id="modalBody"></div>
@@ -882,7 +952,7 @@
                 : `<span class="placeholder">👤</span>`;
 
             return `
-                <div class="team-card">
+                <div class="team-card" onclick="showPersonFolgas(${i})" style="cursor:pointer">
                     <div class="avatar-container">
                         <div class="avatar" onclick="triggerPhotoUpload(${i})">
                             ${photoHTML}
@@ -1154,6 +1224,94 @@
     // ── MODAL ──
     function closeModal() {
         document.getElementById('modalOverlay').classList.remove('active');
+        document.getElementById('modalConfirm').style.display = '';
+        document.querySelector('.btn-cancel').textContent = 'Cancelar';
+    }
+
+    function showPersonFolgas(idx) {
+        if (event && (event.target.tagName === 'INPUT' || event.target.tagName === 'BUTTON' || event.target.closest('.avatar'))) return;
+
+        const p = state.team[idx];
+        const folgas = getPersonFolgas(idx).sort((a, b) => a.startDate.localeCompare(b.startDate));
+        const committed = getPersonCommitted(idx);
+        const available = getPersonAvailable(idx);
+        const colors = ['#6366f1', '#22c55e', '#f59e0b', '#3b82f6'];
+        const color = colors[idx];
+
+        const photoHTML = p.photo
+            ? `<img src="${p.photo}">`
+            : '👤';
+
+        const statsHTML = `
+            <div class="person-modal-stats">
+                <div class="pm-stat">
+                    <div class="pm-stat-val" style="color: ${color}">${p.balance}h</div>
+                    <div class="pm-stat-label">Saldo Total</div>
+                </div>
+                <div class="pm-stat">
+                    <div class="pm-stat-val" style="color: var(--red)">${committed}h</div>
+                    <div class="pm-stat-label">Comprometido</div>
+                </div>
+                <div class="pm-stat">
+                    <div class="pm-stat-val" style="color: ${available >= 0 ? 'var(--green)' : 'var(--red)'}">${available}h</div>
+                    <div class="pm-stat-label">Disponível</div>
+                </div>
+            </div>
+        `;
+
+        let folgasHTML;
+        if (folgas.length === 0) {
+            folgasHTML = `<div class="empty-state"><span>📭</span>Nenhuma folga agendada</div>`;
+        } else {
+            folgasHTML = `
+                <div class="pm-section-title">Folgas Programadas (${folgas.length})</div>
+                <div class="pm-folga-list">
+                    ${folgas.map(f => {
+                        const days = countFolgaDays(f);
+                        const dateLabel = f.startDate === f.endDate
+                            ? formatDateBR(f.startDate)
+                            : `${formatDateBR(f.startDate)} → ${formatDateBR(f.endDate)}`;
+                        return `
+                            <div class="pm-folga-item" style="border-left-color: ${color}">
+                                <div>
+                                    <div class="pm-folga-dates">${dateLabel}</div>
+                                    ${f.note ? `<div class="pm-folga-note">${f.note}</div>` : ''}
+                                </div>
+                                <div class="pm-folga-right">
+                                    <div>
+                                        <div class="pm-folga-days">${days} dia${days > 1 ? 's' : ''}</div>
+                                        <div class="pm-folga-hours">-${days * HOURS_PER_DAY}h</div>
+                                    </div>
+                                    <button class="pm-folga-remove" onclick="removeFolgaFromModal('${f.id}', ${idx})" title="Remover">✕</button>
+                                </div>
+                            </div>
+                        `;
+                    }).join('')}
+                </div>
+            `;
+        }
+
+        document.getElementById('modalTitle').innerHTML = `
+            <div class="person-modal-header">
+                <div class="person-modal-avatar">${photoHTML}</div>
+                <div>
+                    <div class="person-modal-name">${p.name}</div>
+                    <div class="person-modal-role">${p.role}</div>
+                </div>
+            </div>
+        `;
+        document.getElementById('modalBody').innerHTML = statsHTML + folgasHTML;
+        document.getElementById('modalConfirm').style.display = 'none';
+        document.querySelector('.btn-cancel').textContent = 'Fechar';
+        document.getElementById('modalOverlay').classList.add('active');
+    }
+
+    function removeFolgaFromModal(id, personIdx) {
+        state.folgas = state.folgas.filter(f => f.id !== id);
+        saveState();
+        renderAll();
+        showPersonFolgas(personIdx);
+        showToast('Folga removida.');
     }
 
     // ── TOAST ──
