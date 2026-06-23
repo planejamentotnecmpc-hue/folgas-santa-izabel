@@ -81,6 +81,22 @@
             margin-top: 3px;
         }
         .header-right { z-index: 1; display: flex; align-items: center; gap: 16px; }
+        .btn-export {
+            font-size: 13px;
+            color: rgba(255,255,255,0.85);
+            background: rgba(99,102,241,0.25);
+            border: 1px solid rgba(99,102,241,0.4);
+            padding: 8px 16px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-family: inherit;
+            font-weight: 500;
+            transition: background 0.2s, border-color 0.2s;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+        .btn-export:hover { background: rgba(99,102,241,0.4); border-color: rgba(99,102,241,0.6); }
         .current-date {
             font-size: 13px;
             color: rgba(255,255,255,0.7);
@@ -763,6 +779,7 @@
         </h1>
     </div>
     <div class="header-right">
+        <button class="btn-export" onclick="exportData()" title="Baixar data.json atualizado para publicar no repositório">⬇ Exportar Dados</button>
         <div class="current-date" id="currentDate"></div>
     </div>
 </div>
@@ -880,14 +897,16 @@
 <script>
     // ── DATA ──
     const STORAGE_KEY = 'folgas_santa_izabel';
+    const DATA_VERSION_KEY = 'folgas_data_version';
     const HOURS_PER_DAY = 8;
 
-    let state = loadState();
+    let state = defaultState();
     let currentMonth = new Date().getMonth();
     let currentYear = new Date().getFullYear();
 
     function defaultState() {
         return {
+            version: 0,
             team: [
                 { name: 'Colaborador 1', role: 'Cargo', balance: 0, photo: null },
                 { name: 'Colaborador 2', role: 'Cargo', balance: 0, photo: null },
@@ -898,7 +917,19 @@
         };
     }
 
-    function loadState() {
+    async function loadStateFromServer() {
+        try {
+            const resp = await fetch('data.json?t=' + Date.now());
+            if (resp.ok) {
+                const data = await resp.json();
+                const localVersion = parseInt(localStorage.getItem(DATA_VERSION_KEY) || '0');
+                const serverVersion = data.version || 0;
+                if (serverVersion >= localVersion) {
+                    localStorage.setItem(DATA_VERSION_KEY, String(serverVersion));
+                    return data;
+                }
+            }
+        } catch(e) {}
         try {
             const saved = localStorage.getItem(STORAGE_KEY);
             if (saved) return JSON.parse(saved);
@@ -908,6 +939,46 @@
 
     function saveState() {
         localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
+    }
+
+    function exportData() {
+        let hasBase64Photos = false;
+        const exportState = {
+            version: (state.version || 0) + 1,
+            team: state.team.map((p, i) => {
+                let photo = p.photo;
+                if (photo && photo.startsWith('data:')) {
+                    hasBase64Photos = true;
+                    photo = `fotos/pessoa${i + 1}.jpg`;
+                }
+                return { name: p.name, role: p.role, balance: p.balance, photo: photo };
+            }),
+            folgas: state.folgas
+        };
+
+        if (hasBase64Photos) {
+            state.team.forEach((p, i) => {
+                if (p.photo && p.photo.startsWith('data:')) {
+                    const link = document.createElement('a');
+                    link.href = p.photo;
+                    link.download = `pessoa${i + 1}.jpg`;
+                    link.click();
+                }
+            });
+        }
+
+        const blob = new Blob([JSON.stringify(exportState, null, 4)], { type: 'application/json' });
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = 'data.json';
+        a.click();
+        URL.revokeObjectURL(url);
+
+        const msg = hasBase64Photos
+            ? 'data.json + fotos exportados! Coloque as fotos na pasta fotos/ do repositório e faça push.'
+            : 'data.json exportado! Substitua o arquivo no repositório e faça push.';
+        showToast(msg);
     }
 
     // ── COMPUTED ──
@@ -1352,7 +1423,10 @@
 
     // ── INIT ──
     updateDateDisplay();
-    renderAll();
+    (async () => {
+        state = await loadStateFromServer();
+        renderAll();
+    })();
 </script>
 </body>
 </html>

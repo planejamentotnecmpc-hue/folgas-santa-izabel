@@ -1,0 +1,10 @@
+{
+    "version": 1,
+    "team": [
+        { "name": "Colaborador 1", "role": "Cargo", "balance": 0, "photo": null },
+        { "name": "Colaborador 2", "role": "Cargo", "balance": 0, "photo": null },
+        { "name": "Colaborador 3", "role": "Cargo", "balance": 0, "photo": null },
+        { "name": "Colaborador 4", "role": "Cargo", "balance": 0, "photo": null }
+    ],
+    "folgas": []
+}
