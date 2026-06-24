@@ -41,6 +41,15 @@
             "endDate": "2026-06-22",
             "note": "Folga, utilização do banco de horas",
             "status": "aprovada"
+        },
+        {
+            "id": "mqs4unils8bjh",
+            "personIdx": 1,
+            "startDate": "2026-06-22",
+            "endDate": "2026-06-22",
+            "note": "Folga Programada - Utilização do banco de horas",
+            "substituto": "",
+            "status": "aguardando_substituto"
         }
     ]
 }
