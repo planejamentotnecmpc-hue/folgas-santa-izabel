@@ -720,6 +720,52 @@
             letter-spacing: 0.5px; font-weight: 600; margin-bottom: 10px;
         }
 
+        /* ── APPROVAL STATUS ── */
+        .status-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 4px;
+            font-size: 10px;
+            font-weight: 600;
+            padding: 3px 8px;
+            border-radius: 6px;
+            text-transform: uppercase;
+            letter-spacing: 0.3px;
+        }
+        .status-badge.pendente { background: var(--amber-bg); color: var(--amber); }
+        .status-badge.aprovada { background: var(--green-bg); color: var(--green); }
+        .status-badge.rejeitada { background: var(--red-bg); color: var(--red); }
+
+        .approval-actions {
+            display: flex;
+            gap: 4px;
+        }
+        .btn-approve, .btn-reject {
+            border: none;
+            padding: 5px 10px;
+            border-radius: 6px;
+            font-size: 11px;
+            font-weight: 600;
+            cursor: pointer;
+            font-family: inherit;
+            transition: transform 0.15s, filter 0.15s;
+        }
+        .btn-approve:hover, .btn-reject:hover { transform: scale(1.05); filter: brightness(1.15); }
+        .btn-approve { background: var(--green-bg); color: var(--green); }
+        .btn-reject { background: var(--red-bg); color: var(--red); }
+
+        .cal-event.pendente { opacity: 0.7; border-left-style: dashed; }
+        .cal-event.rejeitada { opacity: 0.4; text-decoration: line-through; }
+
+        .pm-folga-item.pendente { border-left-style: dashed; }
+        .pm-folga-item.rejeitada { opacity: 0.5; }
+        .pm-folga-status-row {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            margin-top: 6px;
+        }
+
         /* ── EMPTY STATE ── */
         .empty-state {
             text-align: center;
@@ -1254,12 +1300,14 @@
             if (isWeekend) classes.push('weekend');
 
             const events = getFolgasForDate(dateStr);
-            const eventsHTML = events.map(e =>
-                `<div class="cal-event person-${e.personIdx}" title="${state.team[e.personIdx].name}${e.note ? ' - ' + e.note : ''}">
-                    ${state.team[e.personIdx].name.split(' ')[0]}
+            const statusIcons = { pendente: '⏳', aprovada: '✅', rejeitada: '❌' };
+            const eventsHTML = events.map(e => {
+                const s = e.status || 'pendente';
+                return `<div class="cal-event person-${e.personIdx} ${s}" title="${state.team[e.personIdx].name} — ${s.charAt(0).toUpperCase() + s.slice(1)}${e.note ? ' - ' + e.note : ''}">
+                    ${statusIcons[s]} ${state.team[e.personIdx].name.split(' ')[0]}
                     <button class="remove-event" onclick="event.stopPropagation(); removeFolga('${e.id}')">✕</button>
-                </div>`
-            ).join('');
+                </div>`;
+            }).join('');
 
             html += `<div class="${classes.join(' ')}" onclick="quickAdd('${dateStr}')">
                 <div class="cal-day-num">${d}</div>
@@ -1317,7 +1365,8 @@
             personIdx,
             startDate,
             endDate: endDate || startDate,
-            note
+            note,
+            status: 'pendente'
         };
 
         const days = countFolgaDays(folga);
@@ -1348,6 +1397,38 @@
         document.querySelector('.bottom-grid').scrollIntoView({ behavior: 'smooth' });
     }
 
+    function approveFolga(id) {
+        const folga = state.folgas.find(f => f.id === id);
+        if (!folga) return;
+        folga.status = 'aprovada';
+        saveState();
+        renderAll();
+        showToast(`Folga de ${state.team[folga.personIdx].name} aprovada!`);
+    }
+
+    function rejectFolga(id) {
+        const folga = state.folgas.find(f => f.id === id);
+        if (!folga) return;
+        folga.status = 'rejeitada';
+        saveState();
+        renderAll();
+        showToast(`Folga de ${state.team[folga.personIdx].name} rejeitada.`);
+    }
+
+    function statusLabel(status) {
+        const s = status || 'pendente';
+        const icons = { pendente: '⏳', aprovada: '✅', rejeitada: '❌' };
+        const labels = { pendente: 'Pendente', aprovada: 'Aprovada', rejeitada: 'Rejeitada' };
+        return `<span class="status-badge ${s}">${icons[s]} ${labels[s]}</span>`;
+    }
+
+    function approvalButtons(id) {
+        return `<div class="approval-actions">
+            <button class="btn-approve" onclick="event.stopPropagation(); approveFolga('${id}')" title="Aprovar">✓ Aprovar</button>
+            <button class="btn-reject" onclick="event.stopPropagation(); rejectFolga('${id}')" title="Rejeitar">✕ Rejeitar</button>
+        </div>`;
+    }
+
     function removeFolga(id) {
         const folga = state.folgas.find(f => f.id === id);
         if (!folga) return;
@@ -1373,19 +1454,22 @@
         list.innerHTML = upcoming.map(f => {
             const p = state.team[f.personIdx];
             const days = countFolgaDays(f);
+            const s = f.status || 'pendente';
             const photoHTML = p.photo
                 ? `<img src="${p.photo}">`
                 : '👤';
             const dateLabel = f.startDate === f.endDate
                 ? formatDateBR(f.startDate)
                 : `${formatDateBR(f.startDate)} → ${formatDateBR(f.endDate)}`;
+            const showButtons = s === 'pendente' ? approvalButtons(f.id) : '';
 
             return `
                 <div class="upcoming-item person-${f.personIdx}">
                     <div class="upcoming-avatar">${photoHTML}</div>
                     <div class="upcoming-info">
-                        <div class="upcoming-name">${p.name}</div>
+                        <div class="upcoming-name">${p.name} ${statusLabel(s)}</div>
                         <div class="upcoming-date">${dateLabel}${f.note ? ' · ' + f.note : ''}</div>
+                        ${showButtons}
                     </div>
                     <div class="upcoming-hours">-${days * HOURS_PER_DAY}h</div>
                     <button class="upcoming-remove" onclick="removeFolga('${f.id}')" title="Remover">✕</button>
@@ -1446,14 +1530,23 @@
                 <div class="pm-folga-list">
                     ${folgas.map(f => {
                         const days = countFolgaDays(f);
+                        const s = f.status || 'pendente';
                         const dateLabel = f.startDate === f.endDate
                             ? formatDateBR(f.startDate)
                             : `${formatDateBR(f.startDate)} → ${formatDateBR(f.endDate)}`;
+                        const modalButtons = s === 'pendente' ? `<div class="approval-actions">
+                            <button class="btn-approve" onclick="event.stopPropagation(); approveFolgaFromModal('${f.id}', ${idx})" title="Aprovar">✓ Aprovar</button>
+                            <button class="btn-reject" onclick="event.stopPropagation(); rejectFolgaFromModal('${f.id}', ${idx})" title="Rejeitar">✕ Rejeitar</button>
+                        </div>` : '';
                         return `
-                            <div class="pm-folga-item" style="border-left-color: ${color}">
+                            <div class="pm-folga-item ${s}" style="border-left-color: ${color}">
                                 <div>
                                     <div class="pm-folga-dates">${dateLabel}</div>
                                     ${f.note ? `<div class="pm-folga-note">${f.note}</div>` : ''}
+                                    <div class="pm-folga-status-row">
+                                        ${statusLabel(s)}
+                                        ${modalButtons}
+                                    </div>
                                 </div>
                                 <div class="pm-folga-right">
                                     <div>
@@ -1490,6 +1583,16 @@
         renderAll();
         showPersonFolgas(personIdx);
         showToast('Folga removida.');
+    }
+
+    function approveFolgaFromModal(id, personIdx) {
+        approveFolga(id);
+        showPersonFolgas(personIdx);
+    }
+
+    function rejectFolgaFromModal(id, personIdx) {
+        rejectFolga(id);
+        showPersonFolgas(personIdx);
     }
 
     // ── TOAST ──

@@ -31,14 +31,16 @@
             "personIdx": 2,
             "startDate": "2026-07-27",
             "endDate": "2026-07-31",
-            "note": "Folga Programada - Utilização do banco de horas"
+            "note": "Folga Programada - Utilização do banco de horas",
+            "status": "pendente"
         },
         {
             "id": "mqr196nxtgjzr",
             "personIdx": 3,
             "startDate": "2026-06-22",
             "endDate": "2026-06-22",
-            "note": "Folga, utilização do banco de horas"
+            "note": "Folga, utilização do banco de horas",
+            "status": "pendente"
         }
     ]
 }
