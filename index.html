@@ -613,8 +613,8 @@
             border: 1px solid var(--border);
             border-radius: var(--radius);
             padding: 32px 36px;
-            width: 680px;
-            max-width: 92%;
+            width: 780px;
+            max-width: 94%;
             max-height: 85vh;
             overflow-y: auto;
         }
@@ -699,12 +699,17 @@
         .pm-folga-list::-webkit-scrollbar-thumb { background: var(--border); border-radius: 4px; }
         .pm-folga-item {
             display: flex;
-            align-items: center;
-            justify-content: space-between;
-            padding: 14px 18px;
+            flex-direction: column;
+            padding: 16px 20px;
             background: var(--surface2);
             border-radius: 10px;
             border-left: 4px solid;
+            gap: 10px;
+        }
+        .pm-folga-top {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
             gap: 16px;
         }
         .pm-folga-dates { font-size: 14px; font-weight: 600; }
@@ -807,8 +812,8 @@
         .pm-folga-status-row {
             display: flex;
             align-items: center;
-            gap: 8px;
-            margin-top: 6px;
+            justify-content: space-between;
+            gap: 10px;
         }
 
         /* ── EMPTY STATE ── */
@@ -1732,21 +1737,23 @@
                         }
                         return `
                             <div class="pm-folga-item ${s}" style="border-left-color: ${color}">
-                                <div>
-                                    <div class="pm-folga-dates">${dateLabel}</div>
-                                    ${f.note ? `<div class="pm-folga-note">${f.note}</div>` : ''}
-                                    ${substitutoInfo(f)}
-                                    <div class="pm-folga-status-row">
-                                        ${statusLabel(s)}
-                                        ${modalActions}
+                                <div class="pm-folga-top">
+                                    <div>
+                                        <div class="pm-folga-dates">${dateLabel}</div>
+                                        ${f.note ? `<div class="pm-folga-note">${f.note}</div>` : ''}
+                                        ${substitutoInfo(f)}
+                                    </div>
+                                    <div class="pm-folga-right">
+                                        <div>
+                                            <div class="pm-folga-days">${days} dia${days > 1 ? 's' : ''}</div>
+                                            <div class="pm-folga-hours">-${days * HOURS_PER_DAY}h</div>
+                                        </div>
+                                        <button class="pm-folga-remove" onclick="removeFolgaFromModal('${f.id}', ${idx})" title="Remover">✕</button>
                                     </div>
                                 </div>
-                                <div class="pm-folga-right">
-                                    <div>
-                                        <div class="pm-folga-days">${days} dia${days > 1 ? 's' : ''}</div>
-                                        <div class="pm-folga-hours">-${days * HOURS_PER_DAY}h</div>
-                                    </div>
-                                    <button class="pm-folga-remove" onclick="removeFolgaFromModal('${f.id}', ${idx})" title="Remover">✕</button>
+                                <div class="pm-folga-status-row">
+                                    ${statusLabel(s)}
+                                    ${modalActions}
                                 </div>
                             </div>
                         `;
