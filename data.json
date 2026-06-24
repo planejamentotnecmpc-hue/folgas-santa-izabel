@@ -41,14 +41,6 @@
             "endDate": "2026-06-22",
             "note": "Folga, utilização do banco de horas",
             "status": "aprovada"
-        },
-        {
-            "id": "mqs482vhg0o2x",
-            "personIdx": 1,
-            "startDate": "2026-06-22",
-            "endDate": "2026-06-22",
-            "note": "Folga - Utilização do banco de horas",
-            "status": "pendente"
         }
     ]
 }
