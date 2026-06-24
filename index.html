@@ -1020,7 +1020,7 @@
             await fetch(EMAIL_CONFIG.scriptURL, {
                 method: 'POST',
                 body: JSON.stringify({ type, ...data }),
-                redirect: 'follow'
+                mode: 'no-cors'
             });
             return true;
         } catch (e) {
