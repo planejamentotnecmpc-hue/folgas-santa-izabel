@@ -27,14 +27,6 @@
     ],
     "folgas": [
         {
-            "id": "mqqx146ycrm4q",
-            "personIdx": 2,
-            "startDate": "2026-07-27",
-            "endDate": "2026-07-31",
-            "note": "Folga Programada - Utilização do banco de horas",
-            "status": "pendente"
-        },
-        {
             "id": "mqr196nxtgjzr",
             "personIdx": 3,
             "startDate": "2026-06-22",
