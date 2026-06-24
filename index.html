@@ -948,6 +948,43 @@
 <div class="toast" id="toast"></div>
 
 <script>
+    // ── EMAIL CONFIG ──
+    const EMAIL_CONFIG = {
+        scriptURL: 'https://script.google.com/macros/s/AKfycbx7NieNaImftJbhfNvlLL4Q2DCqoXceQ6tuQH5vozKrn4iTm7cyzcHRlouJW0EUvBGjaA/exec',
+        barbaraEmail: 'barbara.lopes@cmpcrs.com.br',
+        portalURL: 'https://planejamentotnecmpc-hue.github.io/folgas-santa-izabel/'
+    };
+
+    const EMAIL_MAP = {
+        'Tatiane': 'terceiro.tatiane.huff@cmpc.com',
+        'Elisa': 'terceiro.elisa.terres@cmpc.com',
+        'Filipe': 'terceiro.filipe.feijo@cmpcrs.com.br',
+        'Pedro': 'terceiro.pedro.rodrigues@cmpc.com'
+    };
+
+    function getPersonEmail(person) {
+        if (person.email) return person.email;
+        for (const [name, email] of Object.entries(EMAIL_MAP)) {
+            if (person.name.toLowerCase().includes(name.toLowerCase())) return email;
+        }
+        return '';
+    }
+
+    async function sendEmail(type, data) {
+        if (!EMAIL_CONFIG.scriptURL) return false;
+        try {
+            await fetch(EMAIL_CONFIG.scriptURL, {
+                method: 'POST',
+                body: JSON.stringify({ type, ...data }),
+                redirect: 'follow'
+            });
+            return true;
+        } catch (e) {
+            console.error('Erro ao enviar email:', e);
+            return false;
+        }
+    }
+
     // ── DATA ──
     const GITHUB_OWNER = 'planejamentotnecmpc-hue';
     const GITHUB_REPO = 'folgas-santa-izabel';
@@ -1345,7 +1382,7 @@
     }
 
     // ── ADD FOLGA ──
-    function addFolga() {
+    async function addFolga() {
         const personIdx = parseInt(document.getElementById('formPerson').value);
         const startDate = document.getElementById('formDateStart').value;
         const endDate = document.getElementById('formDateEnd').value || startDate;
@@ -1388,6 +1425,21 @@
         document.getElementById('formNote').value = '';
 
         showToast(`Folga agendada: ${state.team[personIdx].name} — ${days} dia(s) (${hours}h)`);
+
+        const person = state.team[personIdx];
+        const dateLabel = folga.startDate === folga.endDate
+            ? formatDateBR(folga.startDate)
+            : `${formatDateBR(folga.startDate)} a ${formatDateBR(folga.endDate)}`;
+        const sent = await sendEmail('nova_folga', {
+            to: EMAIL_CONFIG.barbaraEmail,
+            personName: person.name,
+            dates: dateLabel,
+            days: days,
+            hours: hours,
+            note: folga.note || '',
+            portalURL: EMAIL_CONFIG.portalURL
+        });
+        if (sent) showToast('📧 Email enviado para Barbara solicitando aprovação.');
     }
 
     function quickAdd(dateStr) {
@@ -1397,22 +1449,58 @@
         document.querySelector('.bottom-grid').scrollIntoView({ behavior: 'smooth' });
     }
 
-    function approveFolga(id) {
+    async function approveFolga(id) {
         const folga = state.folgas.find(f => f.id === id);
         if (!folga) return;
         folga.status = 'aprovada';
         saveState();
         renderAll();
-        showToast(`Folga de ${state.team[folga.personIdx].name} aprovada!`);
+
+        const person = state.team[folga.personIdx];
+        const email = getPersonEmail(person);
+        const days = countFolgaDays(folga);
+        const dateLabel = folga.startDate === folga.endDate
+            ? formatDateBR(folga.startDate)
+            : `${formatDateBR(folga.startDate)} a ${formatDateBR(folga.endDate)}`;
+
+        if (email) {
+            const sent = await sendEmail('status_folga', {
+                to: email, personName: person.name, status: 'APROVADA',
+                dates: dateLabel, days: days, hours: days * HOURS_PER_DAY, note: folga.note || ''
+            });
+            showToast(sent
+                ? `✅ Folga aprovada! Email enviado para ${person.name}.`
+                : `✅ Folga aprovada! (email não enviado)`);
+        } else {
+            showToast(`✅ Folga de ${person.name} aprovada!`);
+        }
     }
 
-    function rejectFolga(id) {
+    async function rejectFolga(id) {
         const folga = state.folgas.find(f => f.id === id);
         if (!folga) return;
         folga.status = 'rejeitada';
         saveState();
         renderAll();
-        showToast(`Folga de ${state.team[folga.personIdx].name} rejeitada.`);
+
+        const person = state.team[folga.personIdx];
+        const email = getPersonEmail(person);
+        const days = countFolgaDays(folga);
+        const dateLabel = folga.startDate === folga.endDate
+            ? formatDateBR(folga.startDate)
+            : `${formatDateBR(folga.startDate)} a ${formatDateBR(folga.endDate)}`;
+
+        if (email) {
+            const sent = await sendEmail('status_folga', {
+                to: email, personName: person.name, status: 'REJEITADA',
+                dates: dateLabel, days: days, hours: days * HOURS_PER_DAY, note: folga.note || ''
+            });
+            showToast(sent
+                ? `❌ Folga rejeitada. Email enviado para ${person.name}.`
+                : `❌ Folga rejeitada. (email não enviado)`);
+        } else {
+            showToast(`❌ Folga de ${person.name} rejeitada.`);
+        }
     }
 
     function statusLabel(status) {
@@ -1585,13 +1673,13 @@
         showToast('Folga removida.');
     }
 
-    function approveFolgaFromModal(id, personIdx) {
-        approveFolga(id);
+    async function approveFolgaFromModal(id, personIdx) {
+        await approveFolga(id);
         showPersonFolgas(personIdx);
     }
 
-    function rejectFolgaFromModal(id, personIdx) {
-        rejectFolga(id);
+    async function rejectFolgaFromModal(id, personIdx) {
+        await rejectFolga(id);
         showPersonFolgas(personIdx);
     }
 
