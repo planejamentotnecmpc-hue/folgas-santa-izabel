@@ -105,6 +105,15 @@
             "note": "Folga Programada - Utilização do banco de horas",
             "substituto": "",
             "status": "aguardando_substituto"
+        },
+        {
+            "id": "mqsbz7yqyufbe",
+            "personIdx": 1,
+            "startDate": "2026-12-14",
+            "endDate": "2026-12-14",
+            "note": "Folga Programada - Utilização do banco de horas",
+            "substituto": "",
+            "status": "aguardando_substituto"
         }
     ]
 }
