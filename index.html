@@ -995,6 +995,7 @@
         scriptURL: 'https://script.google.com/macros/s/AKfycbx7NieNaImftJbhfNvlLL4Q2DCqoXceQ6tuQH5vozKrn4iTm7cyzcHRlouJW0EUvBGjaA/exec',
         arthurEmail: 'terceiro.arthur.abreu@cmpc.com',
         barbaraEmail: 'barbara.lopes@cmpcrs.com.br',
+        deniseEmail: 'denise.almeida@timenow.com.br',
         portalURL: 'https://planejamentotnecmpc-hue.github.io/folgas-santa-izabel/'
     };
 
@@ -1507,17 +1508,17 @@
             ? formatDateBR(folga.startDate)
             : `${formatDateBR(folga.startDate)} a ${formatDateBR(folga.endDate)}`;
 
+        const emailData = {
+            personName: person.name, status: 'APROVADA',
+            dates: dateLabel, days: days, hours: days * HOURS_PER_DAY,
+            note: folga.note || '', substituto: folga.substituto || ''
+        };
+
         if (email) {
-            const sent = await sendEmail('status_folga', {
-                to: email, personName: person.name, status: 'APROVADA',
-                dates: dateLabel, days: days, hours: days * HOURS_PER_DAY, note: folga.note || ''
-            });
-            showToast(sent
-                ? `✅ Folga aprovada! Email enviado para ${person.name}.`
-                : `✅ Folga aprovada! (email não enviado)`);
-        } else {
-            showToast(`✅ Folga de ${person.name} aprovada!`);
+            await sendEmail('status_folga', { ...emailData, to: email });
         }
+        await sendEmail('ciencia_folga', { ...emailData, to: EMAIL_CONFIG.deniseEmail });
+        showToast(`✅ Folga aprovada! Emails enviados.`);
     }
 
     async function rejectFolga(id) {
