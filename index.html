@@ -612,9 +612,11 @@
             background: var(--surface);
             border: 1px solid var(--border);
             border-radius: var(--radius);
-            padding: 28px;
-            width: 520px;
-            max-width: 90%;
+            padding: 32px 36px;
+            width: 680px;
+            max-width: 92%;
+            max-height: 85vh;
+            overflow-y: auto;
         }
         .modal h3 {
             font-size: 18px;
@@ -660,7 +662,7 @@
             border-bottom: 1px solid var(--border);
         }
         .person-modal-avatar {
-            width: 56px; height: 56px;
+            width: 64px; height: 64px;
             border-radius: 50%;
             object-fit: cover;
             background: var(--surface2);
@@ -670,28 +672,28 @@
             flex-shrink: 0;
         }
         .person-modal-avatar img { width: 100%; height: 100%; object-fit: cover; border-radius: 50%; }
-        .person-modal-name { font-size: 18px; font-weight: 700; }
-        .person-modal-role { font-size: 12px; color: var(--text2); margin-top: 2px; }
+        .person-modal-name { font-size: 20px; font-weight: 700; }
+        .person-modal-role { font-size: 13px; color: var(--text2); margin-top: 4px; }
         .person-modal-stats {
             display: grid;
             grid-template-columns: repeat(3, 1fr);
-            gap: 10px;
-            margin-bottom: 20px;
+            gap: 14px;
+            margin-bottom: 24px;
         }
         .pm-stat {
             background: var(--surface2);
             border-radius: 10px;
-            padding: 12px;
+            padding: 16px;
             text-align: center;
         }
-        .pm-stat-val { font-size: 22px; font-weight: 700; }
-        .pm-stat-label { font-size: 10px; color: var(--text2); text-transform: uppercase; letter-spacing: 0.5px; margin-top: 2px; }
+        .pm-stat-val { font-size: 26px; font-weight: 700; }
+        .pm-stat-label { font-size: 11px; color: var(--text2); text-transform: uppercase; letter-spacing: 0.5px; margin-top: 4px; }
         .pm-folga-list {
-            max-height: 250px;
+            max-height: 350px;
             overflow-y: auto;
             display: flex;
             flex-direction: column;
-            gap: 8px;
+            gap: 10px;
         }
         .pm-folga-list::-webkit-scrollbar { width: 4px; }
         .pm-folga-list::-webkit-scrollbar-thumb { background: var(--border); border-radius: 4px; }
@@ -699,16 +701,17 @@
             display: flex;
             align-items: center;
             justify-content: space-between;
-            padding: 12px 14px;
+            padding: 14px 18px;
             background: var(--surface2);
             border-radius: 10px;
-            border-left: 3px solid;
+            border-left: 4px solid;
+            gap: 16px;
         }
-        .pm-folga-dates { font-size: 13px; font-weight: 600; }
-        .pm-folga-note { font-size: 11px; color: var(--text2); margin-top: 2px; }
-        .pm-folga-right { text-align: right; display: flex; align-items: center; gap: 10px; }
-        .pm-folga-days { font-size: 13px; font-weight: 600; }
-        .pm-folga-hours { font-size: 11px; color: var(--red); font-weight: 600; }
+        .pm-folga-dates { font-size: 14px; font-weight: 600; }
+        .pm-folga-note { font-size: 12px; color: var(--text2); margin-top: 3px; }
+        .pm-folga-right { text-align: right; display: flex; align-items: center; gap: 12px; flex-shrink: 0; }
+        .pm-folga-days { font-size: 14px; font-weight: 600; }
+        .pm-folga-hours { font-size: 12px; color: var(--red); font-weight: 600; }
         .pm-folga-remove {
             background: none; border: none; color: var(--text2);
             cursor: pointer; font-size: 14px; padding: 4px 6px;
@@ -716,8 +719,8 @@
         }
         .pm-folga-remove:hover { background: var(--red-bg); color: var(--red); }
         .pm-section-title {
-            font-size: 12px; color: var(--text2); text-transform: uppercase;
-            letter-spacing: 0.5px; font-weight: 600; margin-bottom: 10px;
+            font-size: 13px; color: var(--text2); text-transform: uppercase;
+            letter-spacing: 0.5px; font-weight: 600; margin-bottom: 12px;
         }
 
         /* ── APPROVAL STATUS ── */
