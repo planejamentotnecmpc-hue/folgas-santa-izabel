@@ -732,6 +732,7 @@
             text-transform: uppercase;
             letter-spacing: 0.3px;
         }
+        .status-badge.aguardando_substituto { background: var(--blue-bg); color: var(--blue); }
         .status-badge.pendente { background: var(--amber-bg); color: var(--amber); }
         .status-badge.aprovada { background: var(--green-bg); color: var(--green); }
         .status-badge.rejeitada { background: var(--red-bg); color: var(--red); }
@@ -754,11 +755,52 @@
         .btn-approve { background: var(--green-bg); color: var(--green); }
         .btn-reject { background: var(--red-bg); color: var(--red); }
 
+        .cal-event.aguardando_substituto { opacity: 0.6; border-left-style: dotted; }
         .cal-event.pendente { opacity: 0.7; border-left-style: dashed; }
         .cal-event.rejeitada { opacity: 0.4; text-decoration: line-through; }
 
+        .pm-folga-item.aguardando_substituto { border-left-style: dotted; }
         .pm-folga-item.pendente { border-left-style: dashed; }
         .pm-folga-item.rejeitada { opacity: 0.5; }
+
+        .substituto-form {
+            display: flex;
+            gap: 6px;
+            margin-top: 6px;
+            align-items: center;
+        }
+        .substituto-input {
+            background: var(--surface2);
+            border: 1px solid var(--border);
+            color: var(--text);
+            padding: 6px 10px;
+            border-radius: 6px;
+            font-size: 12px;
+            font-family: inherit;
+            outline: none;
+            flex: 1;
+            transition: border-color 0.2s;
+        }
+        .substituto-input:focus { border-color: var(--accent); }
+        .btn-substituto {
+            background: var(--blue);
+            color: white;
+            border: none;
+            padding: 6px 12px;
+            border-radius: 6px;
+            font-size: 11px;
+            font-weight: 600;
+            cursor: pointer;
+            font-family: inherit;
+            white-space: nowrap;
+            transition: transform 0.15s;
+        }
+        .btn-substituto:hover { transform: scale(1.05); }
+        .substituto-info {
+            font-size: 11px;
+            color: var(--blue);
+            margin-top: 2px;
+        }
         .pm-folga-status-row {
             display: flex;
             align-items: center;
@@ -951,6 +993,7 @@
     // ── EMAIL CONFIG ──
     const EMAIL_CONFIG = {
         scriptURL: 'https://script.google.com/macros/s/AKfycbx7NieNaImftJbhfNvlLL4Q2DCqoXceQ6tuQH5vozKrn4iTm7cyzcHRlouJW0EUvBGjaA/exec',
+        arthurEmail: 'terceiro.arthur.abreu@cmpc.com',
         barbaraEmail: 'barbara.lopes@cmpcrs.com.br',
         portalURL: 'https://planejamentotnecmpc-hue.github.io/folgas-santa-izabel/'
     };
@@ -1337,7 +1380,7 @@
             if (isWeekend) classes.push('weekend');
 
             const events = getFolgasForDate(dateStr);
-            const statusIcons = { pendente: '⏳', aprovada: '✅', rejeitada: '❌' };
+            const statusIcons = { aguardando_substituto: '🔄', pendente: '⏳', aprovada: '✅', rejeitada: '❌' };
             const eventsHTML = events.map(e => {
                 const s = e.status || 'pendente';
                 return `<div class="cal-event person-${e.personIdx} ${s}" title="${state.team[e.personIdx].name} — ${s.charAt(0).toUpperCase() + s.slice(1)}${e.note ? ' - ' + e.note : ''}">
@@ -1403,7 +1446,8 @@
             startDate,
             endDate: endDate || startDate,
             note,
-            status: 'pendente'
+            substituto: '',
+            status: 'aguardando_substituto'
         };
 
         const days = countFolgaDays(folga);
@@ -1430,8 +1474,8 @@
         const dateLabel = folga.startDate === folga.endDate
             ? formatDateBR(folga.startDate)
             : `${formatDateBR(folga.startDate)} a ${formatDateBR(folga.endDate)}`;
-        const sent = await sendEmail('nova_folga', {
-            to: EMAIL_CONFIG.barbaraEmail,
+        const sent = await sendEmail('solicitar_substituto', {
+            to: EMAIL_CONFIG.arthurEmail,
             personName: person.name,
             dates: dateLabel,
             days: days,
@@ -1439,7 +1483,7 @@
             note: folga.note || '',
             portalURL: EMAIL_CONFIG.portalURL
         });
-        if (sent) showToast('📧 Email enviado para Barbara solicitando aprovação.');
+        if (sent) showToast('📧 Email enviado para Arthur solicitando substituto.');
     }
 
     function quickAdd(dateStr) {
@@ -1504,10 +1548,10 @@
     }
 
     function statusLabel(status) {
-        const s = status || 'pendente';
-        const icons = { pendente: '⏳', aprovada: '✅', rejeitada: '❌' };
-        const labels = { pendente: 'Pendente', aprovada: 'Aprovada', rejeitada: 'Rejeitada' };
-        return `<span class="status-badge ${s}">${icons[s]} ${labels[s]}</span>`;
+        const s = status || 'aguardando_substituto';
+        const icons = { aguardando_substituto: '🔄', pendente: '⏳', aprovada: '✅', rejeitada: '❌' };
+        const labels = { aguardando_substituto: 'Aguardando Substituto', pendente: 'Pendente', aprovada: 'Aprovada', rejeitada: 'Rejeitada' };
+        return `<span class="status-badge ${s}">${icons[s] || '⏳'} ${labels[s] || s}</span>`;
     }
 
     function approvalButtons(id) {
@@ -1515,6 +1559,50 @@
             <button class="btn-approve" onclick="event.stopPropagation(); approveFolga('${id}')" title="Aprovar">✓ Aprovar</button>
             <button class="btn-reject" onclick="event.stopPropagation(); rejectFolga('${id}')" title="Rejeitar">✕ Rejeitar</button>
         </div>`;
+    }
+
+    function substitutoForm(id) {
+        return `<div class="substituto-form">
+            <input type="text" class="substituto-input" id="sub_${id}" placeholder="Nome do substituto..." onclick="event.stopPropagation()">
+            <button class="btn-substituto" onclick="event.stopPropagation(); submitSubstituto('${id}')" title="Confirmar substituto">Confirmar</button>
+        </div>`;
+    }
+
+    function substitutoInfo(folga) {
+        return folga.substituto ? `<div class="substituto-info">👤 Substituto: <strong>${folga.substituto}</strong></div>` : '';
+    }
+
+    async function submitSubstituto(id) {
+        const input = document.getElementById('sub_' + id);
+        const nome = input ? input.value.trim() : '';
+        if (!nome) { showToast('Informe o nome do substituto!', true); return; }
+
+        const folga = state.folgas.find(f => f.id === id);
+        if (!folga) return;
+        folga.substituto = nome;
+        folga.status = 'pendente';
+        saveState();
+        renderAll();
+
+        const person = state.team[folga.personIdx];
+        const days = countFolgaDays(folga);
+        const dateLabel = folga.startDate === folga.endDate
+            ? formatDateBR(folga.startDate)
+            : `${formatDateBR(folga.startDate)} a ${formatDateBR(folga.endDate)}`;
+
+        const sent = await sendEmail('nova_folga', {
+            to: EMAIL_CONFIG.barbaraEmail,
+            personName: person.name,
+            substituto: nome,
+            dates: dateLabel,
+            days: days,
+            hours: days * HOURS_PER_DAY,
+            note: folga.note || '',
+            portalURL: EMAIL_CONFIG.portalURL
+        });
+        showToast(sent
+            ? `📧 Substituto definido! Email enviado para Barbara solicitando aprovação.`
+            : `Substituto definido! (email não enviado)`);
     }
 
     function removeFolga(id) {
@@ -1542,14 +1630,20 @@
         list.innerHTML = upcoming.map(f => {
             const p = state.team[f.personIdx];
             const days = countFolgaDays(f);
-            const s = f.status || 'pendente';
+            const s = f.status || 'aguardando_substituto';
             const photoHTML = p.photo
                 ? `<img src="${p.photo}">`
                 : '👤';
             const dateLabel = f.startDate === f.endDate
                 ? formatDateBR(f.startDate)
                 : `${formatDateBR(f.startDate)} → ${formatDateBR(f.endDate)}`;
-            const showButtons = s === 'pendente' ? approvalButtons(f.id) : '';
+
+            let actionHTML = '';
+            if (s === 'aguardando_substituto') {
+                actionHTML = substitutoForm(f.id);
+            } else if (s === 'pendente') {
+                actionHTML = approvalButtons(f.id);
+            }
 
             return `
                 <div class="upcoming-item person-${f.personIdx}">
@@ -1557,7 +1651,8 @@
                     <div class="upcoming-info">
                         <div class="upcoming-name">${p.name} ${statusLabel(s)}</div>
                         <div class="upcoming-date">${dateLabel}${f.note ? ' · ' + f.note : ''}</div>
-                        ${showButtons}
+                        ${substitutoInfo(f)}
+                        ${actionHTML}
                     </div>
                     <div class="upcoming-hours">-${days * HOURS_PER_DAY}h</div>
                     <button class="upcoming-remove" onclick="removeFolga('${f.id}')" title="Remover">✕</button>
@@ -1618,22 +1713,28 @@
                 <div class="pm-folga-list">
                     ${folgas.map(f => {
                         const days = countFolgaDays(f);
-                        const s = f.status || 'pendente';
+                        const s = f.status || 'aguardando_substituto';
                         const dateLabel = f.startDate === f.endDate
                             ? formatDateBR(f.startDate)
                             : `${formatDateBR(f.startDate)} → ${formatDateBR(f.endDate)}`;
-                        const modalButtons = s === 'pendente' ? `<div class="approval-actions">
-                            <button class="btn-approve" onclick="event.stopPropagation(); approveFolgaFromModal('${f.id}', ${idx})" title="Aprovar">✓ Aprovar</button>
-                            <button class="btn-reject" onclick="event.stopPropagation(); rejectFolgaFromModal('${f.id}', ${idx})" title="Rejeitar">✕ Rejeitar</button>
-                        </div>` : '';
+                        let modalActions = '';
+                        if (s === 'aguardando_substituto') {
+                            modalActions = substitutoForm(f.id);
+                        } else if (s === 'pendente') {
+                            modalActions = `<div class="approval-actions">
+                                <button class="btn-approve" onclick="event.stopPropagation(); approveFolgaFromModal('${f.id}', ${idx})" title="Aprovar">✓ Aprovar</button>
+                                <button class="btn-reject" onclick="event.stopPropagation(); rejectFolgaFromModal('${f.id}', ${idx})" title="Rejeitar">✕ Rejeitar</button>
+                            </div>`;
+                        }
                         return `
                             <div class="pm-folga-item ${s}" style="border-left-color: ${color}">
                                 <div>
                                     <div class="pm-folga-dates">${dateLabel}</div>
                                     ${f.note ? `<div class="pm-folga-note">${f.note}</div>` : ''}
+                                    ${substitutoInfo(f)}
                                     <div class="pm-folga-status-row">
                                         ${statusLabel(s)}
-                                        ${modalButtons}
+                                        ${modalActions}
                                     </div>
                                 </div>
                                 <div class="pm-folga-right">
