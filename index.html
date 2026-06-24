@@ -1097,9 +1097,9 @@
         return defaultState();
     }
 
-    function saveState() {
+    async function saveState() {
         localStorage.setItem(CACHE_KEY, JSON.stringify(state));
-        if (isAdmin) syncToGitHub();
+        if (isAdmin) await syncToGitHub();
     }
 
     // ── ADMIN / GITHUB SYNC ──
@@ -1469,8 +1469,8 @@
         }
 
         state.folgas.push(folga);
-        saveState();
         renderAll();
+        await saveState();
 
         // Reset form
         document.getElementById('formDateStart').value = '';
@@ -1506,8 +1506,8 @@
         const folga = state.folgas.find(f => f.id === id);
         if (!folga) return;
         folga.status = 'aprovada';
-        saveState();
         renderAll();
+        await saveState();
 
         const person = state.team[folga.personIdx];
         const email = getPersonEmail(person);
@@ -1533,8 +1533,8 @@
         const folga = state.folgas.find(f => f.id === id);
         if (!folga) return;
         folga.status = 'rejeitada';
-        saveState();
         renderAll();
+        await saveState();
 
         const person = state.team[folga.personIdx];
         const email = getPersonEmail(person);
@@ -1590,8 +1590,8 @@
         if (!folga) return;
         folga.substituto = nome;
         folga.status = 'pendente';
-        saveState();
         renderAll();
+        await saveState();
 
         const person = state.team[folga.personIdx];
         const days = countFolgaDays(folga);
@@ -1614,12 +1614,12 @@
             : `Substituto definido! (email não enviado)`);
     }
 
-    function removeFolga(id) {
+    async function removeFolga(id) {
         const folga = state.folgas.find(f => f.id === id);
         if (!folga) return;
         state.folgas = state.folgas.filter(f => f.id !== id);
-        saveState();
         renderAll();
+        await saveState();
         showToast('Folga removida.');
     }
 
@@ -1777,10 +1777,10 @@
         document.getElementById('modalOverlay').classList.add('active');
     }
 
-    function removeFolgaFromModal(id, personIdx) {
+    async function removeFolgaFromModal(id, personIdx) {
         state.folgas = state.folgas.filter(f => f.id !== id);
-        saveState();
         renderAll();
+        await saveState();
         showPersonFolgas(personIdx);
         showToast('Folga removida.');
     }
