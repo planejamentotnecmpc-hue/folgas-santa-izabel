@@ -864,6 +864,50 @@
             .main-grid, .bottom-grid { grid-template-columns: 1fr; }
         }
 
+        /* ── COORD FERIAS BANNER ── */
+        .coord-banner {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 10px 40px;
+            background: linear-gradient(90deg, rgba(236,72,153,0.08), rgba(20,184,166,0.08));
+            border-bottom: 1px solid var(--border);
+            flex-wrap: wrap;
+        }
+        .coord-banner-label {
+            font-size: 11px;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.8px;
+            color: var(--text2);
+            white-space: nowrap;
+        }
+        .coord-chip {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            padding: 5px 14px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 600;
+            white-space: nowrap;
+        }
+        .coord-chip.coord-0 {
+            background: rgba(236,72,153,0.15);
+            color: #f9a8d4;
+            border: 1px solid rgba(236,72,153,0.25);
+        }
+        .coord-chip.coord-1 {
+            background: rgba(20,184,166,0.15);
+            color: #5eead4;
+            border: 1px solid rgba(20,184,166,0.25);
+        }
+        .coord-chip-dates {
+            font-weight: 400;
+            opacity: 0.75;
+            font-size: 11px;
+        }
+
         /* ── PRINT ── */
         @media print {
             body { background: white; color: #1a1a1a; }
@@ -889,6 +933,9 @@
         <div class="current-date" id="currentDate"></div>
     </div>
 </div>
+
+<!-- COORD FERIAS BANNER -->
+<div class="coord-banner" id="coordBanner" style="display:none"></div>
 
 <!-- SUMMARY CARDS -->
 <div class="summary-bar">
@@ -1714,6 +1761,37 @@
         container.insertAdjacentHTML('beforeend', html);
     }
 
+    function renderCoordBanner() {
+        const banner = document.getElementById('coordBanner');
+        const today = new Date();
+        today.setHours(0,0,0,0);
+        const todayStr = formatDate(today);
+        const limit = new Date(today);
+        limit.setDate(limit.getDate() + 30);
+        const limitStr = formatDate(limit);
+
+        const relevant = COORD_FERIAS.filter(c =>
+            c.endDate >= todayStr && c.startDate <= limitStr
+        ).sort((a, b) => a.startDate.localeCompare(b.startDate));
+
+        if (relevant.length === 0) {
+            banner.style.display = 'none';
+            return;
+        }
+
+        banner.style.display = 'flex';
+        banner.innerHTML = `<span class="coord-banner-label">✈ Férias Coordenação</span>` +
+            relevant.map(c => {
+                const start = new Date(c.startDate + 'T00:00:00');
+                const end = new Date(c.endDate + 'T00:00:00');
+                const active = today >= start && today <= end;
+                const label = active ? 'Em férias' : `${formatDateBR(c.startDate)} → ${formatDateBR(c.endDate)}`;
+                return `<span class="coord-chip coord-${c.coordIdx}">
+                    ${c.name} <span class="coord-chip-dates">${label}</span>
+                </span>`;
+            }).join('');
+    }
+
     // ── MODAL ──
     function closeModal() {
         document.getElementById('modalOverlay').classList.remove('active');
@@ -1857,6 +1935,7 @@
         renderCalendar();
         renderUpcoming();
         renderCoordFerias();
+        renderCoordBanner();
     }
 
     // ── INIT ──
