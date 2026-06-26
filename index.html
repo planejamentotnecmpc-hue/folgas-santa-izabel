@@ -453,6 +453,9 @@
         .cal-event.person-1 { background: rgba(34,197,94,0.25); color: #86efac; border-left: 2px solid #22c55e; }
         .cal-event.person-2 { background: rgba(245,158,11,0.25); color: #fde68a; border-left: 2px solid #f59e0b; }
         .cal-event.person-3 { background: rgba(59,130,246,0.25); color: #93c5fd; border-left: 2px solid #3b82f6; }
+        .cal-event.coord { border-left-style: dashed; font-style: italic; cursor: default; }
+        .cal-event.coord-0 { background: rgba(236,72,153,0.20); color: #f9a8d4; border-left: 2px dashed #ec4899; }
+        .cal-event.coord-1 { background: rgba(20,184,166,0.20); color: #5eead4; border-left: 2px dashed #14b8a6; }
         .cal-event .remove-event {
             position: absolute;
             right: 2px; top: 50%;
@@ -1044,6 +1047,11 @@
     const CACHE_KEY = 'folgas_state_cache';
     const HOURS_PER_DAY = 8;
 
+    const COORD_FERIAS = [
+        { name: 'Bárbara', startDate: '2026-07-20', endDate: '2026-08-08', coordIdx: 0 },
+        { name: 'Maurício', startDate: '2026-07-06', endDate: '2026-07-14', coordIdx: 1 },
+    ];
+
     let state = defaultState();
     let currentMonth = new Date().getMonth();
     let currentYear = new Date().getFullYear();
@@ -1389,6 +1397,7 @@
             if (isWeekend) classes.push('weekend');
 
             const events = getFolgasForDate(dateStr);
+            const coordEvents = getCoordFeriasForDate(dateStr);
             const statusIcons = { aguardando_substituto: '🔄', pendente: '⏳', aprovada: '✅', rejeitada: '❌' };
             const eventsHTML = events.map(e => {
                 const s = e.status || 'pendente';
@@ -1396,7 +1405,9 @@
                     ${statusIcons[s]} ${state.team[e.personIdx].name.split(' ')[0]}
                     <button class="remove-event" onclick="event.stopPropagation(); removeFolga('${e.id}')">✕</button>
                 </div>`;
-            }).join('');
+            }).join('') + coordEvents.map(c =>
+                `<div class="cal-event coord coord-${c.coordIdx}" title="${c.name} — Férias">${c.name.split(' ')[0]} ✈</div>`
+            ).join('');
 
             html += `<div class="${classes.join(' ')}" onclick="quickAdd('${dateStr}')">
                 <div class="cal-day-num">${d}</div>
@@ -1417,6 +1428,10 @@
         return state.folgas.filter(f => {
             return dateStr >= f.startDate && dateStr <= f.endDate;
         });
+    }
+
+    function getCoordFeriasForDate(dateStr) {
+        return COORD_FERIAS.filter(c => dateStr >= c.startDate && dateStr <= c.endDate);
     }
 
     function formatDate(date) {
@@ -1675,6 +1690,30 @@
         return `${d}/${m}/${y}`;
     }
 
+    function renderCoordFerias() {
+        const container = document.getElementById('upcomingList');
+        const today = formatDate(new Date());
+        const upcoming = COORD_FERIAS
+            .filter(c => c.endDate >= today)
+            .sort((a, b) => a.startDate.localeCompare(b.startDate));
+        if (upcoming.length === 0) return;
+
+        const coordColors = ['#ec4899', '#14b8a6'];
+        const html = upcoming.map(c => {
+            const dateLabel = `${formatDateBR(c.startDate)} → ${formatDateBR(c.endDate)}`;
+            return `
+                <div class="upcoming-item coord-${c.coordIdx}" style="border-left: 3px dashed ${coordColors[c.coordIdx]}; opacity: 0.85;">
+                    <div class="upcoming-avatar" style="font-size:18px">✈</div>
+                    <div class="upcoming-info">
+                        <div class="upcoming-name">${c.name} <span class="status-badge aprovada" style="background: rgba(236,72,153,0.15); color: #f9a8d4;">Férias</span></div>
+                        <div class="upcoming-date">${dateLabel} · Coordenação</div>
+                    </div>
+                </div>
+            `;
+        }).join('');
+        container.insertAdjacentHTML('beforeend', html);
+    }
+
     // ── MODAL ──
     function closeModal() {
         document.getElementById('modalOverlay').classList.remove('active');
@@ -1817,6 +1856,7 @@
         renderSummary();
         renderCalendar();
         renderUpcoming();
+        renderCoordFerias();
     }
 
     // ── INIT ──
