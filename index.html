@@ -1120,6 +1120,19 @@
         { name: 'Maurício', startDate: '2026-07-06', endDate: '2026-07-14', coordIdx: 1 },
     ];
 
+    const DEFAULT_PHOTOS = {
+        'tatiane': 'fotos/tatiane.png',
+        'elisa':   'fotos/elisa.png',
+        'filipe':  'fotos/filipe.png',
+        'pedro':   'fotos/pedro.png',
+    };
+
+    function getPhoto(p) {
+        if (p.photo) return p.photo;
+        const key = Object.keys(DEFAULT_PHOTOS).find(k => p.name.toLowerCase().includes(k));
+        return key ? DEFAULT_PHOTOS[key] : null;
+    }
+
     const TEAM_FERIAS = [
         { name: 'Pedro',  personIdx: 3, startDate: '2026-07-29', endDate: '2026-08-07' },
         { name: 'Pedro',  personIdx: 3, startDate: '2026-08-31', endDate: '2026-09-04' },
@@ -1338,8 +1351,9 @@
             const folgaCount = getPersonFolgas(i).length;
             const pct = p.balance > 0 ? Math.max(0, Math.min(100, (available / p.balance) * 100)) : 0;
             const statusClass = available > 40 ? 'online' : available > 0 ? 'away' : 'off';
-            const photoHTML = p.photo
-                ? `<img src="${p.photo}" alt="${p.name}">`
+            const ph = getPhoto(p);
+            const photoHTML = ph
+                ? `<img src="${ph}" alt="${p.name}">`
                 : `<span class="placeholder">👤</span>`;
 
             return `
@@ -1738,8 +1752,9 @@
             const p = state.team[f.personIdx];
             const days = countFolgaDays(f);
             const s = f.status || 'aguardando_substituto';
-            const photoHTML = p.photo
-                ? `<img src="${p.photo}">`
+            const phUp = getPhoto(p);
+            const photoHTML = phUp
+                ? `<img src="${phUp}">`
                 : '👤';
             const dateLabel = f.startDate === f.endDate
                 ? formatDateBR(f.startDate)
@@ -1878,8 +1893,9 @@
         const colors = ['#6366f1', '#22c55e', '#f59e0b', '#3b82f6'];
         const color = colors[idx];
 
-        const photoHTML = p.photo
-            ? `<img src="${p.photo}">`
+        const phModal = getPhoto(p);
+        const photoHTML = phModal
+            ? `<img src="${phModal}">`
             : '👤';
 
         const statsHTML = `
