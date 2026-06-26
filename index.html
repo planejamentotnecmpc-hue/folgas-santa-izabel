@@ -453,6 +453,7 @@
         .cal-event.person-1 { background: rgba(34,197,94,0.25); color: #86efac; border-left: 2px solid #22c55e; }
         .cal-event.person-2 { background: rgba(245,158,11,0.25); color: #fde68a; border-left: 2px solid #f59e0b; }
         .cal-event.person-3 { background: rgba(59,130,246,0.25); color: #93c5fd; border-left: 2px solid #3b82f6; }
+        .cal-event.ferias { border-left-style: dashed; font-style: italic; cursor: default; }
         .cal-event.coord { border-left-style: dashed; font-style: italic; cursor: default; }
         .cal-event.coord-0 { background: rgba(236,72,153,0.20); color: #f9a8d4; border-left: 2px dashed #ec4899; }
         .cal-event.coord-1 { background: rgba(20,184,166,0.20); color: #5eead4; border-left: 2px dashed #14b8a6; }
@@ -902,6 +903,26 @@
             color: #5eead4;
             border: 1px solid rgba(20,184,166,0.25);
         }
+        .coord-chip.team-0 {
+            background: rgba(99,102,241,0.15);
+            color: #a5b4fc;
+            border: 1px solid rgba(99,102,241,0.25);
+        }
+        .coord-chip.team-1 {
+            background: rgba(34,197,94,0.15);
+            color: #86efac;
+            border: 1px solid rgba(34,197,94,0.25);
+        }
+        .coord-chip.team-2 {
+            background: rgba(245,158,11,0.15);
+            color: #fde68a;
+            border: 1px solid rgba(245,158,11,0.25);
+        }
+        .coord-chip.team-3 {
+            background: rgba(59,130,246,0.15);
+            color: #93c5fd;
+            border: 1px solid rgba(59,130,246,0.25);
+        }
         .coord-chip-dates {
             font-weight: 400;
             opacity: 0.75;
@@ -1097,6 +1118,14 @@
     const COORD_FERIAS = [
         { name: 'Bárbara', startDate: '2026-07-20', endDate: '2026-08-08', coordIdx: 0 },
         { name: 'Maurício', startDate: '2026-07-06', endDate: '2026-07-14', coordIdx: 1 },
+    ];
+
+    const TEAM_FERIAS = [
+        { name: 'Pedro',  personIdx: 3, startDate: '2026-07-29', endDate: '2026-08-07' },
+        { name: 'Pedro',  personIdx: 3, startDate: '2026-08-31', endDate: '2026-09-04' },
+        { name: 'Pedro',  personIdx: 3, startDate: '2026-11-04', endDate: '2026-11-18' },
+        { name: 'Filipe', personIdx: 2, startDate: '2026-08-03', endDate: '2026-08-17' },
+        { name: 'Elisa',  personIdx: 1, startDate: '2026-08-17', endDate: '2026-08-31' },
     ];
 
     let state = defaultState();
@@ -1444,6 +1473,7 @@
             if (isWeekend) classes.push('weekend');
 
             const events = getFolgasForDate(dateStr);
+            const teamFerias = getTeamFeriasForDate(dateStr);
             const coordEvents = getCoordFeriasForDate(dateStr);
             const statusIcons = { aguardando_substituto: '🔄', pendente: '⏳', aprovada: '✅', rejeitada: '❌' };
             const eventsHTML = events.map(e => {
@@ -1452,7 +1482,9 @@
                     ${statusIcons[s]} ${state.team[e.personIdx].name.split(' ')[0]}
                     <button class="remove-event" onclick="event.stopPropagation(); removeFolga('${e.id}')">✕</button>
                 </div>`;
-            }).join('') + coordEvents.map(c =>
+            }).join('') + teamFerias.map(t =>
+                `<div class="cal-event ferias person-${t.personIdx}" title="${t.name} — Férias">✈ ${t.name.split(' ')[0]}</div>`
+            ).join('') + coordEvents.map(c =>
                 `<div class="cal-event coord coord-${c.coordIdx}" title="${c.name} — Férias">${c.name.split(' ')[0]} ✈</div>`
             ).join('');
 
@@ -1479,6 +1511,10 @@
 
     function getCoordFeriasForDate(dateStr) {
         return COORD_FERIAS.filter(c => dateStr >= c.startDate && dateStr <= c.endDate);
+    }
+
+    function getTeamFeriasForDate(dateStr) {
+        return TEAM_FERIAS.filter(t => dateStr >= t.startDate && dateStr <= t.endDate);
     }
 
     function formatDate(date) {
@@ -1740,13 +1776,33 @@
     function renderCoordFerias() {
         const container = document.getElementById('upcomingList');
         const today = formatDate(new Date());
-        const upcoming = COORD_FERIAS
+        const personColors = ['#6366f1', '#22c55e', '#f59e0b', '#3b82f6'];
+        const coordColors = ['#ec4899', '#14b8a6'];
+
+        const teamUpcoming = TEAM_FERIAS
+            .filter(t => t.endDate >= today)
+            .sort((a, b) => a.startDate.localeCompare(b.startDate));
+
+        const coordUpcoming = COORD_FERIAS
             .filter(c => c.endDate >= today)
             .sort((a, b) => a.startDate.localeCompare(b.startDate));
-        if (upcoming.length === 0) return;
 
-        const coordColors = ['#ec4899', '#14b8a6'];
-        const html = upcoming.map(c => {
+        if (teamUpcoming.length === 0 && coordUpcoming.length === 0) return;
+
+        const teamHTML = teamUpcoming.map(t => {
+            const dateLabel = `${formatDateBR(t.startDate)} → ${formatDateBR(t.endDate)}`;
+            return `
+                <div class="upcoming-item" style="border-left: 3px dashed ${personColors[t.personIdx]}; opacity: 0.85;">
+                    <div class="upcoming-avatar" style="font-size:18px">✈</div>
+                    <div class="upcoming-info">
+                        <div class="upcoming-name">${t.name} <span class="status-badge aprovada" style="background: rgba(99,102,241,0.15); color: #a5b4fc;">Férias</span></div>
+                        <div class="upcoming-date">${dateLabel}</div>
+                    </div>
+                </div>
+            `;
+        }).join('');
+
+        const coordHTML = coordUpcoming.map(c => {
             const dateLabel = `${formatDateBR(c.startDate)} → ${formatDateBR(c.endDate)}`;
             return `
                 <div class="upcoming-item coord-${c.coordIdx}" style="border-left: 3px dashed ${coordColors[c.coordIdx]}; opacity: 0.85;">
@@ -1758,7 +1814,8 @@
                 </div>
             `;
         }).join('');
-        container.insertAdjacentHTML('beforeend', html);
+
+        container.insertAdjacentHTML('beforeend', teamHTML + coordHTML);
     }
 
     function renderCoordBanner() {
@@ -1770,26 +1827,38 @@
         limit.setDate(limit.getDate() + 30);
         const limitStr = formatDate(limit);
 
-        const relevant = COORD_FERIAS.filter(c =>
+        const teamRelevant = TEAM_FERIAS.filter(t =>
+            t.endDate >= todayStr && t.startDate <= limitStr
+        ).sort((a, b) => a.startDate.localeCompare(b.startDate));
+
+        const coordRelevant = COORD_FERIAS.filter(c =>
             c.endDate >= todayStr && c.startDate <= limitStr
         ).sort((a, b) => a.startDate.localeCompare(b.startDate));
 
-        if (relevant.length === 0) {
+        if (teamRelevant.length === 0 && coordRelevant.length === 0) {
             banner.style.display = 'none';
             return;
         }
 
+        function chipLabel(startDate, endDate) {
+            const start = new Date(startDate + 'T00:00:00');
+            const end = new Date(endDate + 'T00:00:00');
+            const active = today >= start && today <= end;
+            return active ? 'Em férias' : `${formatDateBR(startDate)} → ${formatDateBR(endDate)}`;
+        }
+
         banner.style.display = 'flex';
-        banner.innerHTML = `<span class="coord-banner-label">✈ Férias Coordenação</span>` +
-            relevant.map(c => {
-                const start = new Date(c.startDate + 'T00:00:00');
-                const end = new Date(c.endDate + 'T00:00:00');
-                const active = today >= start && today <= end;
-                const label = active ? 'Em férias' : `${formatDateBR(c.startDate)} → ${formatDateBR(c.endDate)}`;
-                return `<span class="coord-chip coord-${c.coordIdx}">
-                    ${c.name} <span class="coord-chip-dates">${label}</span>
-                </span>`;
-            }).join('');
+        banner.innerHTML = `<span class="coord-banner-label">✈ Férias</span>` +
+            teamRelevant.map(t =>
+                `<span class="coord-chip team-${t.personIdx}">
+                    ${t.name} <span class="coord-chip-dates">${chipLabel(t.startDate, t.endDate)}</span>
+                </span>`
+            ).join('') +
+            coordRelevant.map(c =>
+                `<span class="coord-chip coord-${c.coordIdx}">
+                    ${c.name} <span class="coord-chip-dates">${chipLabel(c.startDate, c.endDate)}</span>
+                </span>`
+            ).join('');
     }
 
     // ── MODAL ──
