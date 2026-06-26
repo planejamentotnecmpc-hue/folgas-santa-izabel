@@ -81,28 +81,6 @@
             margin-top: 3px;
         }
         .header-right { z-index: 1; display: flex; align-items: center; gap: 16px; }
-        .btn-admin {
-            font-size: 18px;
-            background: rgba(255,255,255,0.08);
-            border: 1px solid transparent;
-            padding: 6px 10px;
-            border-radius: 8px;
-            cursor: pointer;
-            transition: background 0.2s, border-color 0.2s;
-            line-height: 1;
-        }
-        .btn-admin:hover { background: rgba(255,255,255,0.15); }
-        .btn-admin.active { background: rgba(34,197,94,0.2); border-color: rgba(34,197,94,0.4); }
-        .sync-indicator {
-            font-size: 11px;
-            padding: 4px 10px;
-            border-radius: 6px;
-            font-weight: 500;
-            display: none;
-        }
-        .sync-indicator.syncing { display: inline; background: rgba(245,158,11,0.2); color: #f59e0b; }
-        .sync-indicator.synced { display: inline; background: rgba(34,197,94,0.2); color: #22c55e; }
-        .sync-indicator.error { display: inline; background: rgba(239,68,68,0.2); color: #ef4444; }
         .current-date {
             font-size: 13px;
             color: rgba(255,255,255,0.7);
@@ -616,11 +594,9 @@
             background: var(--surface);
             border: 1px solid var(--border);
             border-radius: var(--radius);
-            padding: 32px 36px;
-            width: 780px;
-            max-width: 94%;
-            max-height: 85vh;
-            overflow-y: auto;
+            padding: 28px;
+            width: 520px;
+            max-width: 90%;
         }
         .modal h3 {
             font-size: 18px;
@@ -666,7 +642,7 @@
             border-bottom: 1px solid var(--border);
         }
         .person-modal-avatar {
-            width: 64px; height: 64px;
+            width: 56px; height: 56px;
             border-radius: 50%;
             object-fit: cover;
             background: var(--surface2);
@@ -676,51 +652,45 @@
             flex-shrink: 0;
         }
         .person-modal-avatar img { width: 100%; height: 100%; object-fit: cover; border-radius: 50%; }
-        .person-modal-name { font-size: 20px; font-weight: 700; }
-        .person-modal-role { font-size: 13px; color: var(--text2); margin-top: 4px; }
+        .person-modal-name { font-size: 18px; font-weight: 700; }
+        .person-modal-role { font-size: 12px; color: var(--text2); margin-top: 2px; }
         .person-modal-stats {
             display: grid;
             grid-template-columns: repeat(3, 1fr);
-            gap: 14px;
-            margin-bottom: 24px;
+            gap: 10px;
+            margin-bottom: 20px;
         }
         .pm-stat {
             background: var(--surface2);
             border-radius: 10px;
-            padding: 16px;
+            padding: 12px;
             text-align: center;
         }
-        .pm-stat-val { font-size: 26px; font-weight: 700; }
-        .pm-stat-label { font-size: 11px; color: var(--text2); text-transform: uppercase; letter-spacing: 0.5px; margin-top: 4px; }
+        .pm-stat-val { font-size: 22px; font-weight: 700; }
+        .pm-stat-label { font-size: 10px; color: var(--text2); text-transform: uppercase; letter-spacing: 0.5px; margin-top: 2px; }
         .pm-folga-list {
-            max-height: 350px;
+            max-height: 250px;
             overflow-y: auto;
             display: flex;
             flex-direction: column;
-            gap: 10px;
+            gap: 8px;
         }
         .pm-folga-list::-webkit-scrollbar { width: 4px; }
         .pm-folga-list::-webkit-scrollbar-thumb { background: var(--border); border-radius: 4px; }
         .pm-folga-item {
             display: flex;
-            flex-direction: column;
-            padding: 16px 20px;
-            background: var(--surface2);
-            border-radius: 10px;
-            border-left: 4px solid;
-            gap: 10px;
-        }
-        .pm-folga-top {
-            display: flex;
             align-items: center;
             justify-content: space-between;
-            gap: 16px;
+            padding: 12px 14px;
+            background: var(--surface2);
+            border-radius: 10px;
+            border-left: 3px solid;
         }
-        .pm-folga-dates { font-size: 14px; font-weight: 600; }
-        .pm-folga-note { font-size: 12px; color: var(--text2); margin-top: 3px; }
-        .pm-folga-right { text-align: right; display: flex; align-items: center; gap: 12px; flex-shrink: 0; }
-        .pm-folga-days { font-size: 14px; font-weight: 600; }
-        .pm-folga-hours { font-size: 12px; color: var(--red); font-weight: 600; }
+        .pm-folga-dates { font-size: 13px; font-weight: 600; }
+        .pm-folga-note { font-size: 11px; color: var(--text2); margin-top: 2px; }
+        .pm-folga-right { text-align: right; display: flex; align-items: center; gap: 10px; }
+        .pm-folga-days { font-size: 13px; font-weight: 600; }
+        .pm-folga-hours { font-size: 11px; color: var(--red); font-weight: 600; }
         .pm-folga-remove {
             background: none; border: none; color: var(--text2);
             cursor: pointer; font-size: 14px; padding: 4px 6px;
@@ -728,96 +698,8 @@
         }
         .pm-folga-remove:hover { background: var(--red-bg); color: var(--red); }
         .pm-section-title {
-            font-size: 13px; color: var(--text2); text-transform: uppercase;
-            letter-spacing: 0.5px; font-weight: 600; margin-bottom: 12px;
-        }
-
-        /* ── APPROVAL STATUS ── */
-        .status-badge {
-            display: inline-flex;
-            align-items: center;
-            gap: 4px;
-            font-size: 10px;
-            font-weight: 600;
-            padding: 3px 8px;
-            border-radius: 6px;
-            text-transform: uppercase;
-            letter-spacing: 0.3px;
-        }
-        .status-badge.aguardando_substituto { background: var(--blue-bg); color: var(--blue); }
-        .status-badge.pendente { background: var(--amber-bg); color: var(--amber); }
-        .status-badge.aprovada { background: var(--green-bg); color: var(--green); }
-        .status-badge.rejeitada { background: var(--red-bg); color: var(--red); }
-
-        .approval-actions {
-            display: flex;
-            gap: 4px;
-        }
-        .btn-approve, .btn-reject {
-            border: none;
-            padding: 5px 10px;
-            border-radius: 6px;
-            font-size: 11px;
-            font-weight: 600;
-            cursor: pointer;
-            font-family: inherit;
-            transition: transform 0.15s, filter 0.15s;
-        }
-        .btn-approve:hover, .btn-reject:hover { transform: scale(1.05); filter: brightness(1.15); }
-        .btn-approve { background: var(--green-bg); color: var(--green); }
-        .btn-reject { background: var(--red-bg); color: var(--red); }
-
-        .cal-event.aguardando_substituto { opacity: 0.6; border-left-style: dotted; }
-        .cal-event.pendente { opacity: 0.7; border-left-style: dashed; }
-        .cal-event.rejeitada { opacity: 0.4; text-decoration: line-through; }
-
-        .pm-folga-item.aguardando_substituto { border-left-style: dotted; }
-        .pm-folga-item.pendente { border-left-style: dashed; }
-        .pm-folga-item.rejeitada { opacity: 0.5; }
-
-        .substituto-form {
-            display: flex;
-            gap: 6px;
-            margin-top: 6px;
-            align-items: center;
-        }
-        .substituto-input {
-            background: var(--surface2);
-            border: 1px solid var(--border);
-            color: var(--text);
-            padding: 6px 10px;
-            border-radius: 6px;
-            font-size: 12px;
-            font-family: inherit;
-            outline: none;
-            flex: 1;
-            transition: border-color 0.2s;
-        }
-        .substituto-input:focus { border-color: var(--accent); }
-        .btn-substituto {
-            background: var(--blue);
-            color: white;
-            border: none;
-            padding: 6px 12px;
-            border-radius: 6px;
-            font-size: 11px;
-            font-weight: 600;
-            cursor: pointer;
-            font-family: inherit;
-            white-space: nowrap;
-            transition: transform 0.15s;
-        }
-        .btn-substituto:hover { transform: scale(1.05); }
-        .substituto-info {
-            font-size: 11px;
-            color: var(--blue);
-            margin-top: 2px;
-        }
-        .pm-folga-status-row {
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            gap: 10px;
+            font-size: 12px; color: var(--text2); text-transform: uppercase;
+            letter-spacing: 0.5px; font-weight: 600; margin-bottom: 10px;
         }
 
         /* ── EMPTY STATE ── */
@@ -864,6 +746,81 @@
             .team-grid { grid-template-columns: 1fr; }
             .main-grid, .bottom-grid { grid-template-columns: 1fr; }
         }
+
+        /* ── STATUS BADGES ── */
+        .status-badge {
+            font-size: 10px;
+            padding: 3px 8px;
+            border-radius: 12px;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.3px;
+            white-space: nowrap;
+        }
+        .status-badge.pendente { background: var(--amber-bg); color: var(--amber); }
+        .status-badge.aprovada { background: var(--green-bg); color: var(--green); }
+        .status-badge.rejeitada { background: var(--red-bg); color: var(--red); }
+
+        .approval-actions {
+            display: flex;
+            gap: 4px;
+            flex-shrink: 0;
+        }
+        .btn-status {
+            border: none;
+            padding: 6px 10px;
+            border-radius: 6px;
+            font-size: 11px;
+            font-weight: 600;
+            cursor: pointer;
+            font-family: inherit;
+            transition: transform 0.15s, opacity 0.15s;
+            white-space: nowrap;
+        }
+        .btn-status:hover { transform: scale(1.05); }
+        .btn-status:active { transform: scale(0.95); }
+        .btn-status.approve { background: var(--green); color: white; }
+        .btn-status.reject { background: var(--red); color: white; }
+
+        .upcoming-item .upcoming-status-row {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            flex-shrink: 0;
+        }
+
+        .pm-folga-status {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            margin-top: 6px;
+        }
+        .pm-folga-item .btn-status {
+            padding: 4px 8px;
+            font-size: 10px;
+        }
+
+        .email-status-bar {
+            background: var(--surface);
+            border: 1px solid var(--border);
+            border-radius: var(--radius);
+            padding: 10px 24px;
+            margin: 0 40px 16px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-size: 12px;
+            color: var(--text2);
+        }
+        .email-dot {
+            width: 8px; height: 8px;
+            border-radius: 50%;
+            flex-shrink: 0;
+        }
+        .email-dot.active { background: var(--green); box-shadow: 0 0 6px rgba(34,197,94,0.5); }
+        .email-dot.inactive { background: var(--red); }
+        .email-dot.sending { background: var(--amber); animation: pulse 1s infinite; }
+        @keyframes pulse { 0%,100% { opacity: 1; } 50% { opacity: 0.4; } }
 
         /* ── COORD FERIAS BANNER ── */
         .coord-banner {
@@ -929,11 +886,96 @@
             font-size: 11px;
         }
 
+        /* ── CROP EDITOR ── */
+        .crop-overlay {
+            display: none;
+            position: fixed;
+            top: 0; left: 0; right: 0; bottom: 0;
+            background: rgba(0,0,0,0.75);
+            backdrop-filter: blur(6px);
+            z-index: 2000;
+            align-items: center;
+            justify-content: center;
+        }
+        .crop-overlay.active { display: flex; }
+        .crop-dialog {
+            background: var(--surface);
+            border: 1px solid var(--border);
+            border-radius: var(--radius);
+            padding: 28px;
+            text-align: center;
+            max-width: 90vw;
+        }
+        .crop-dialog h3 {
+            font-size: 18px;
+            font-weight: 600;
+            margin-bottom: 20px;
+        }
+        .crop-area {
+            width: 280px;
+            height: 280px;
+            margin: 0 auto;
+            position: relative;
+            overflow: hidden;
+            border-radius: var(--radius);
+            cursor: grab;
+            touch-action: none;
+            background: #000;
+        }
+        .crop-area:active { cursor: grabbing; }
+        .crop-area img {
+            position: absolute;
+            transform-origin: 0 0;
+            user-select: none;
+            -webkit-user-drag: none;
+            pointer-events: none;
+        }
+        .crop-circle-mask {
+            position: absolute;
+            top: 0; left: 0; right: 0; bottom: 0;
+            box-shadow: 0 0 0 9999px rgba(0,0,0,0.55);
+            border-radius: 50%;
+            border: 2px solid rgba(255,255,255,0.4);
+            pointer-events: none;
+            z-index: 1;
+        }
+        .crop-zoom {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin: 16px auto;
+            justify-content: center;
+            width: 280px;
+        }
+        .crop-zoom-btn {
+            background: var(--surface2);
+            border: 1px solid var(--border);
+            color: var(--text);
+            width: 32px; height: 32px;
+            border-radius: 8px;
+            font-size: 18px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: background 0.2s;
+        }
+        .crop-zoom-btn:hover { background: var(--accent); border-color: var(--accent); }
+        .crop-zoom input[type="range"] {
+            flex: 1;
+            accent-color: var(--accent);
+        }
+        .crop-actions {
+            display: flex;
+            gap: 10px;
+            margin-top: 16px;
+        }
+
         /* ── PRINT ── */
         @media print {
             body { background: white; color: #1a1a1a; }
             .header { background: #1e1b4b !important; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
-            .btn-add, .btn-cancel, .btn-confirm, .upcoming-remove, .remove-event { display: none !important; }
+            .btn-add, .btn-cancel, .btn-confirm, .upcoming-remove, .remove-event, .btn-status, .email-status-bar { display: none !important; }
         }
     </style>
 </head>
@@ -949,8 +991,6 @@
         </h1>
     </div>
     <div class="header-right">
-        <span class="sync-indicator" id="syncIndicator"></span>
-        <button class="btn-admin" id="btnAdmin" onclick="toggleAdmin()" title="Modo Admin">🔒</button>
         <div class="current-date" id="currentDate"></div>
     </div>
 </div>
@@ -988,6 +1028,12 @@
             <div class="summary-value red" id="totalCommitted">0h</div>
         </div>
     </div>
+</div>
+
+<!-- EMAIL STATUS -->
+<div class="email-status-bar" id="emailStatusBar">
+    <div class="email-dot inactive" id="emailDot"></div>
+    <span id="emailStatusText">📧 Notificações por email: não configurado — defina a URL do Google Apps Script no código</span>
 </div>
 
 <!-- TEAM CARDS -->
@@ -1065,16 +1111,37 @@
     </div>
 </div>
 
+<!-- CROP EDITOR -->
+<div class="crop-overlay" id="cropOverlay" onclick="if(event.target===this)closeCropEditor()">
+    <div class="crop-dialog">
+        <h3>Ajustar Foto</h3>
+        <div class="crop-area" id="cropArea">
+            <img id="cropImage" src="" alt="">
+            <div class="crop-circle-mask"></div>
+        </div>
+        <div class="crop-zoom">
+            <button class="crop-zoom-btn" onclick="cropZoom(-1)">−</button>
+            <input type="range" id="cropZoomSlider" min="0.5" max="3" step="0.01" value="1" oninput="cropZoomTo(parseFloat(this.value))">
+            <button class="crop-zoom-btn" onclick="cropZoom(1)">+</button>
+        </div>
+        <div class="crop-actions">
+            <button class="btn-cancel" onclick="triggerCropFileInput()">📷 Trocar</button>
+            <button class="btn-cancel" onclick="closeCropEditor()">Cancelar</button>
+            <button class="btn-confirm" onclick="confirmCrop()">Confirmar</button>
+        </div>
+        <input type="file" accept="image/*" id="cropFileInput" style="display:none" onchange="handleCropFileSelect(this)">
+    </div>
+</div>
+
 <!-- TOAST -->
 <div class="toast" id="toast"></div>
 
 <script>
     // ── EMAIL CONFIG ──
+    // Cole aqui a URL do seu Google Apps Script (veja instruções no arquivo email_script.gs)
     const EMAIL_CONFIG = {
         scriptURL: 'https://script.google.com/macros/s/AKfycbx7NieNaImftJbhfNvlLL4Q2DCqoXceQ6tuQH5vozKrn4iTm7cyzcHRlouJW0EUvBGjaA/exec',
-        arthurEmail: 'arthur.abreu@timenow.com.br,pedro.rodrigues@timenow.com.br',
         barbaraEmail: 'barbara.lopes@cmpcrs.com.br',
-        deniseEmail: 'denise.almeida@timenow.com.br',
         portalURL: 'https://planejamentotnecmpc-hue.github.io/folgas-santa-izabel/'
     };
 
@@ -1085,53 +1152,14 @@
         'Pedro': 'terceiro.pedro.rodrigues@cmpc.com'
     };
 
-    function getPersonEmail(person) {
-        if (person.email) return person.email;
-        for (const [name, email] of Object.entries(EMAIL_MAP)) {
-            if (person.name.toLowerCase().includes(name.toLowerCase())) return email;
-        }
-        return '';
-    }
-
-    async function sendEmail(type, data) {
-        if (!EMAIL_CONFIG.scriptURL) return false;
-        try {
-            await fetch(EMAIL_CONFIG.scriptURL, {
-                method: 'POST',
-                body: JSON.stringify({ type, ...data }),
-                mode: 'no-cors'
-            });
-            return true;
-        } catch (e) {
-            console.error('Erro ao enviar email:', e);
-            return false;
-        }
-    }
-
     // ── DATA ──
-    const GITHUB_OWNER = 'planejamentotnecmpc-hue';
-    const GITHUB_REPO = 'folgas-santa-izabel';
-    const ADMIN_TOKEN_KEY = 'folgas_admin_token';
-    const CACHE_KEY = 'folgas_state_cache';
+    const STORAGE_KEY = 'folgas_santa_izabel';
     const HOURS_PER_DAY = 8;
 
     const COORD_FERIAS = [
         { name: 'Bárbara', startDate: '2026-07-20', endDate: '2026-08-08', coordIdx: 0 },
         { name: 'Maurício', startDate: '2026-07-06', endDate: '2026-07-14', coordIdx: 1 },
     ];
-
-    const DEFAULT_PHOTOS = {
-        'tatiane': 'fotos/tatiane.png',
-        'elisa':   'fotos/elisa.png',
-        'filipe':  'fotos/filipe.png',
-        'pedro':   'fotos/pedro.png',
-    };
-
-    function getPhoto(p) {
-        if (p.photo) return p.photo;
-        const key = Object.keys(DEFAULT_PHOTOS).find(k => p.name.toLowerCase().includes(k));
-        return key ? DEFAULT_PHOTOS[key] : null;
-    }
 
     const TEAM_FERIAS = [
         { name: 'Pedro',  personIdx: 3, startDate: '2026-07-29', endDate: '2026-08-07' },
@@ -1141,170 +1169,150 @@
         { name: 'Elisa',  personIdx: 1, startDate: '2026-08-17', endDate: '2026-08-31' },
     ];
 
-    let state = defaultState();
+    let state = migrateState(loadState());
     let currentMonth = new Date().getMonth();
     let currentYear = new Date().getFullYear();
-    let isAdmin = false;
-    let fileSha = null;
 
     function defaultState() {
         return {
             team: [
-                { name: 'Colaborador 1', role: 'Cargo', balance: 0, photo: null },
-                { name: 'Colaborador 2', role: 'Cargo', balance: 0, photo: null },
-                { name: 'Colaborador 3', role: 'Cargo', balance: 0, photo: null },
-                { name: 'Colaborador 4', role: 'Cargo', balance: 0, photo: null },
+                { name: 'Tatiane', role: 'Cargo', balance: 0, photo: null, email: 'terceiro.tatiane.huff@cmpc.com' },
+                { name: 'Elisa', role: 'Cargo', balance: 0, photo: null, email: 'terceiro.elisa.terres@cmpc.com' },
+                { name: 'Filipe', role: 'Cargo', balance: 0, photo: null, email: 'terceiro.filipe.feijo@cmpcrs.com.br' },
+                { name: 'Pedro', role: 'Cargo', balance: 0, photo: null, email: 'terceiro.pedro.rodrigues@cmpc.com' },
             ],
             folgas: []
         };
     }
 
-    async function loadStateFromServer() {
-        const token = getAdminToken();
-        if (token) {
-            try {
-                const resp = await fetch(`https://api.github.com/repos/${GITHUB_OWNER}/${GITHUB_REPO}/contents/data.json`, {
-                    headers: { 'Authorization': `Bearer ${token}`, 'Accept': 'application/vnd.github.v3+json' }
-                });
-                if (resp.ok) {
-                    const meta = await resp.json();
-                    fileSha = meta.sha;
-                    const decoded = decodeURIComponent(escape(atob(meta.content.replace(/\n/g, ''))));
-                    const data = JSON.parse(decoded);
-                    localStorage.setItem(CACHE_KEY, JSON.stringify(data));
-                    return data;
-                }
-            } catch(e) { console.error('GitHub API load error:', e); }
-        }
-
+    function loadState() {
         try {
-            const resp = await fetch('data.json?t=' + Date.now());
-            if (resp.ok) {
-                const data = await resp.json();
-                localStorage.setItem(CACHE_KEY, JSON.stringify(data));
-                return data;
-            }
+            const saved = localStorage.getItem(STORAGE_KEY);
+            if (saved) return JSON.parse(saved);
         } catch(e) {}
-
-        try {
-            const cached = localStorage.getItem(CACHE_KEY);
-            if (cached) return JSON.parse(cached);
-        } catch(e) {}
-
         return defaultState();
     }
 
-    async function saveState() {
-        localStorage.setItem(CACHE_KEY, JSON.stringify(state));
-        if (isAdmin) await syncToGitHub();
-    }
-
-    // ── ADMIN / GITHUB SYNC ──
-    function getAdminToken() {
-        return localStorage.getItem(ADMIN_TOKEN_KEY);
-    }
-
-    function toggleAdmin() {
-        if (isAdmin) {
-            isAdmin = false;
-            updateAdminUI();
-            showToast('Modo admin desativado.');
-            return;
-        }
-        const saved = getAdminToken();
-        if (saved) {
-            isAdmin = true;
-            updateAdminUI();
-            showToast('Modo admin ativado! Alterações serão publicadas automaticamente.');
-            return;
-        }
-        const token = prompt('Cole seu GitHub Personal Access Token (fine-grained, com permissão Contents read/write neste repo):');
-        if (!token || !token.trim()) return;
-        localStorage.setItem(ADMIN_TOKEN_KEY, token.trim());
-        isAdmin = true;
-        updateAdminUI();
-        showToast('Token salvo e modo admin ativado!');
-    }
-
-    function updateAdminUI() {
-        const btn = document.getElementById('btnAdmin');
-        btn.textContent = isAdmin ? '🔓' : '🔒';
-        btn.classList.toggle('active', isAdmin);
-    }
-
-    function setSyncStatus(status, text) {
-        const el = document.getElementById('syncIndicator');
-        el.className = 'sync-indicator ' + status;
-        el.textContent = text;
-        if (status === 'synced') setTimeout(() => { el.className = 'sync-indicator'; el.textContent = ''; }, 3000);
-    }
-
-    async function fetchFileSha() {
-        const token = getAdminToken();
-        if (!token) return null;
-        try {
-            const resp = await fetch(`https://api.github.com/repos/${GITHUB_OWNER}/${GITHUB_REPO}/contents/data.json`, {
-                headers: { 'Authorization': `Bearer ${token}`, 'Accept': 'application/vnd.github.v3+json' }
-            });
-            if (resp.ok) {
-                const data = await resp.json();
-                return data.sha;
-            }
-        } catch(e) {}
-        return null;
-    }
-
-    async function syncToGitHub() {
-        const token = getAdminToken();
-        if (!token) return;
-
-        setSyncStatus('syncing', 'Publicando...');
-
-        try {
-            if (!fileSha) fileSha = await fetchFileSha();
-
-            const exportState = {
-                team: state.team.map(p => ({
-                    name: p.name, role: p.role, balance: p.balance, photo: p.photo
-                })),
-                folgas: state.folgas
-            };
-
-            const content = btoa(unescape(encodeURIComponent(JSON.stringify(exportState, null, 4))));
-
-            const body = {
-                message: 'Atualizar folgas via painel',
-                content: content,
-                branch: 'master'
-            };
-            if (fileSha) body.sha = fileSha;
-
-            const resp = await fetch(`https://api.github.com/repos/${GITHUB_OWNER}/${GITHUB_REPO}/contents/data.json`, {
-                method: 'PUT',
-                headers: {
-                    'Authorization': `Bearer ${token}`,
-                    'Accept': 'application/vnd.github.v3+json',
-                    'Content-Type': 'application/json'
-                },
-                body: JSON.stringify(body)
-            });
-
-            if (resp.ok) {
-                const result = await resp.json();
-                fileSha = result.content.sha;
-                setSyncStatus('synced', 'Publicado!');
-            } else {
-                const err = await resp.json();
-                if (resp.status === 409) {
-                    fileSha = null;
-                    return syncToGitHub();
+    function migrateState(s) {
+        s.team.forEach(p => {
+            if (p.email === undefined) {
+                p.email = '';
+                for (const [name, email] of Object.entries(EMAIL_MAP)) {
+                    if (p.name.toLowerCase().includes(name.toLowerCase())) {
+                        p.email = email;
+                        break;
+                    }
                 }
-                setSyncStatus('error', 'Erro ao publicar');
-                console.error('GitHub API error:', err);
             }
-        } catch(e) {
-            setSyncStatus('error', 'Erro de conexão');
-            console.error('Sync error:', e);
+        });
+        s.folgas.forEach(f => {
+            if (!f.status) f.status = 'pendente';
+        });
+        return s;
+    }
+
+    function saveState() {
+        localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
+    }
+
+    // ── EMAIL ──
+    async function sendEmail(type, data) {
+        if (!EMAIL_CONFIG.scriptURL) {
+            console.warn('Email não configurado: defina EMAIL_CONFIG.scriptURL');
+            return false;
+        }
+        try {
+            updateEmailStatus('sending', 'Enviando email...');
+            const resp = await fetch(EMAIL_CONFIG.scriptURL, {
+                method: 'POST',
+                body: JSON.stringify({ type, ...data }),
+                redirect: 'follow'
+            });
+            updateEmailStatus('active', 'Notificações por email: ativo');
+            return true;
+        } catch (e) {
+            console.error('Erro ao enviar email:', e);
+            updateEmailStatus('inactive', 'Erro ao enviar email — verifique a URL do script');
+            return false;
+        }
+    }
+
+    function updateEmailStatus(status, text) {
+        const dot = document.getElementById('emailDot');
+        const txt = document.getElementById('emailStatusText');
+        dot.className = 'email-dot ' + status;
+        txt.textContent = '📧 ' + text;
+    }
+
+    async function notifyBarbaraNewFolga(folga) {
+        const person = state.team[folga.personIdx];
+        const days = countFolgaDays(folga);
+        const dateLabel = folga.startDate === folga.endDate
+            ? formatDateBR(folga.startDate)
+            : `${formatDateBR(folga.startDate)} a ${formatDateBR(folga.endDate)}`;
+
+        return sendEmail('nova_folga', {
+            to: EMAIL_CONFIG.barbaraEmail,
+            personName: person.name,
+            dates: dateLabel,
+            days: days,
+            hours: days * HOURS_PER_DAY,
+            note: folga.note || '',
+            portalURL: EMAIL_CONFIG.portalURL
+        });
+    }
+
+    async function notifyPersonStatus(folga, status) {
+        const person = state.team[folga.personIdx];
+        const days = countFolgaDays(folga);
+        const dateLabel = folga.startDate === folga.endDate
+            ? formatDateBR(folga.startDate)
+            : `${formatDateBR(folga.startDate)} a ${formatDateBR(folga.endDate)}`;
+
+        return sendEmail('status_folga', {
+            to: person.email,
+            personName: person.name,
+            status: status,
+            dates: dateLabel,
+            days: days,
+            hours: days * HOURS_PER_DAY,
+            note: folga.note || ''
+        });
+    }
+
+    async function approveFolga(id) {
+        const folga = state.folgas.find(f => f.id === id);
+        if (!folga) return;
+        folga.status = 'aprovada';
+        saveState();
+        renderAll();
+
+        const person = state.team[folga.personIdx];
+        if (person.email) {
+            const sent = await notifyPersonStatus(folga, 'APROVADA');
+            showToast(sent
+                ? `✅ Folga aprovada! Email enviado para ${person.name}.`
+                : `✅ Folga aprovada! (Email não enviado — verifique a configuração)`);
+        } else {
+            showToast(`✅ Folga de ${person.name} aprovada!`);
+        }
+    }
+
+    async function rejectFolga(id) {
+        const folga = state.folgas.find(f => f.id === id);
+        if (!folga) return;
+        folga.status = 'rejeitada';
+        saveState();
+        renderAll();
+
+        const person = state.team[folga.personIdx];
+        if (person.email) {
+            const sent = await notifyPersonStatus(folga, 'REJEITADA');
+            showToast(sent
+                ? `❌ Folga rejeitada. Email enviado para ${person.name}.`
+                : `❌ Folga rejeitada. (Email não enviado — verifique a configuração)`);
+        } else {
+            showToast(`❌ Folga de ${person.name} rejeitada.`);
         }
     }
 
@@ -1351,9 +1359,8 @@
             const folgaCount = getPersonFolgas(i).length;
             const pct = p.balance > 0 ? Math.max(0, Math.min(100, (available / p.balance) * 100)) : 0;
             const statusClass = available > 40 ? 'online' : available > 0 ? 'away' : 'off';
-            const ph = getPhoto(p);
-            const photoHTML = ph
-                ? `<img src="${ph}" alt="${p.name}">`
+            const photoHTML = p.photo
+                ? `<img src="${p.photo}" alt="${p.name}">`
                 : `<span class="placeholder">👤</span>`;
 
             return `
@@ -1406,7 +1413,13 @@
     }
 
     function triggerPhotoUpload(idx) {
-        document.getElementById(`photoInput${idx}`).click();
+        event.stopPropagation();
+        const person = state.team[idx];
+        if (person.photoOriginal || person.photo) {
+            openCropEditor(idx, person.photoOriginal || person.photo);
+        } else {
+            document.getElementById(`photoInput${idx}`).click();
+        }
     }
 
     function handlePhoto(idx, input) {
@@ -1414,16 +1427,20 @@
         if (!file) return;
         const reader = new FileReader();
         reader.onload = (e) => {
-            state.team[idx].photo = e.target.result;
-            saveState();
-            renderAll();
-            showToast('Foto atualizada!');
+            openCropEditor(idx, e.target.result);
         };
         reader.readAsDataURL(file);
+        input.value = '';
     }
 
     function updateName(idx, name) {
         state.team[idx].name = name || `Colaborador ${idx + 1}`;
+        for (const [n, email] of Object.entries(EMAIL_MAP)) {
+            if (name.toLowerCase().includes(n.toLowerCase())) {
+                state.team[idx].email = email;
+                break;
+            }
+        }
         saveState();
         renderAll();
     }
@@ -1489,14 +1506,12 @@
             const events = getFolgasForDate(dateStr);
             const teamFerias = getTeamFeriasForDate(dateStr);
             const coordEvents = getCoordFeriasForDate(dateStr);
-            const statusIcons = { aguardando_substituto: '🔄', pendente: '⏳', aprovada: '✅', rejeitada: '❌' };
-            const eventsHTML = events.map(e => {
-                const s = e.status || 'pendente';
-                return `<div class="cal-event person-${e.personIdx} ${s}" title="${state.team[e.personIdx].name} — ${s.charAt(0).toUpperCase() + s.slice(1)}${e.note ? ' - ' + e.note : ''}">
-                    ${statusIcons[s]} ${state.team[e.personIdx].name.split(' ')[0]}
+            const eventsHTML = events.map(e =>
+                `<div class="cal-event person-${e.personIdx}" title="${state.team[e.personIdx].name}${e.note ? ' - ' + e.note : ''}">
+                    ${state.team[e.personIdx].name.split(' ')[0]}
                     <button class="remove-event" onclick="event.stopPropagation(); removeFolga('${e.id}')">✕</button>
-                </div>`;
-            }).join('') + teamFerias.map(t =>
+                </div>`
+            ).join('') + teamFerias.map(t =>
                 `<div class="cal-event ferias person-${t.personIdx}" title="${t.name} — Férias">✈ ${t.name.split(' ')[0]}</div>`
             ).join('') + coordEvents.map(c =>
                 `<div class="cal-event coord coord-${c.coordIdx}" title="${c.name} — Férias">${c.name.split(' ')[0]} ✈</div>`
@@ -1567,8 +1582,7 @@
             startDate,
             endDate: endDate || startDate,
             note,
-            substituto: '',
-            status: 'aguardando_substituto'
+            status: 'pendente'
         };
 
         const days = countFolgaDays(folga);
@@ -1581,8 +1595,8 @@
         }
 
         state.folgas.push(folga);
+        saveState();
         renderAll();
-        await saveState();
 
         // Reset form
         document.getElementById('formDateStart').value = '';
@@ -1591,20 +1605,11 @@
 
         showToast(`Folga agendada: ${state.team[personIdx].name} — ${days} dia(s) (${hours}h)`);
 
-        const person = state.team[personIdx];
-        const dateLabel = folga.startDate === folga.endDate
-            ? formatDateBR(folga.startDate)
-            : `${formatDateBR(folga.startDate)} a ${formatDateBR(folga.endDate)}`;
-        const sent = await sendEmail('solicitar_substituto', {
-            to: EMAIL_CONFIG.arthurEmail,
-            personName: person.name,
-            dates: dateLabel,
-            days: days,
-            hours: hours,
-            note: folga.note || '',
-            portalURL: EMAIL_CONFIG.portalURL
-        });
-        if (sent) showToast('📧 Email enviado para Arthur solicitando substituto.');
+        // Notificar Barbara por email
+        const sent = await notifyBarbaraNewFolga(folga);
+        if (sent) {
+            showToast(`📧 Email enviado para Barbara solicitando aprovação.`);
+        }
     }
 
     function quickAdd(dateStr) {
@@ -1614,124 +1619,12 @@
         document.querySelector('.bottom-grid').scrollIntoView({ behavior: 'smooth' });
     }
 
-    async function approveFolga(id) {
-        const folga = state.folgas.find(f => f.id === id);
-        if (!folga) return;
-        folga.status = 'aprovada';
-        renderAll();
-        await saveState();
-
-        const person = state.team[folga.personIdx];
-        const email = getPersonEmail(person);
-        const days = countFolgaDays(folga);
-        const dateLabel = folga.startDate === folga.endDate
-            ? formatDateBR(folga.startDate)
-            : `${formatDateBR(folga.startDate)} a ${formatDateBR(folga.endDate)}`;
-
-        const emailData = {
-            personName: person.name, status: 'APROVADA',
-            dates: dateLabel, days: days, hours: days * HOURS_PER_DAY,
-            note: folga.note || '', substituto: folga.substituto || ''
-        };
-
-        if (email) {
-            await sendEmail('status_folga', { ...emailData, to: email });
-        }
-        await sendEmail('ciencia_folga', { ...emailData, to: EMAIL_CONFIG.deniseEmail });
-        showToast(`✅ Folga aprovada! Emails enviados.`);
-    }
-
-    async function rejectFolga(id) {
-        const folga = state.folgas.find(f => f.id === id);
-        if (!folga) return;
-        folga.status = 'rejeitada';
-        renderAll();
-        await saveState();
-
-        const person = state.team[folga.personIdx];
-        const email = getPersonEmail(person);
-        const days = countFolgaDays(folga);
-        const dateLabel = folga.startDate === folga.endDate
-            ? formatDateBR(folga.startDate)
-            : `${formatDateBR(folga.startDate)} a ${formatDateBR(folga.endDate)}`;
-
-        if (email) {
-            const sent = await sendEmail('status_folga', {
-                to: email, personName: person.name, status: 'REJEITADA',
-                dates: dateLabel, days: days, hours: days * HOURS_PER_DAY, note: folga.note || ''
-            });
-            showToast(sent
-                ? `❌ Folga rejeitada. Email enviado para ${person.name}.`
-                : `❌ Folga rejeitada. (email não enviado)`);
-        } else {
-            showToast(`❌ Folga de ${person.name} rejeitada.`);
-        }
-    }
-
-    function statusLabel(status) {
-        const s = status || 'aguardando_substituto';
-        const icons = { aguardando_substituto: '🔄', pendente: '⏳', aprovada: '✅', rejeitada: '❌' };
-        const labels = { aguardando_substituto: 'Aguardando Substituto', pendente: 'Pendente', aprovada: 'Aprovada', rejeitada: 'Rejeitada' };
-        return `<span class="status-badge ${s}">${icons[s] || '⏳'} ${labels[s] || s}</span>`;
-    }
-
-    function approvalButtons(id) {
-        return `<div class="approval-actions">
-            <button class="btn-approve" onclick="event.stopPropagation(); approveFolga('${id}')" title="Aprovar">✓ Aprovar</button>
-            <button class="btn-reject" onclick="event.stopPropagation(); rejectFolga('${id}')" title="Rejeitar">✕ Rejeitar</button>
-        </div>`;
-    }
-
-    function substitutoForm(id) {
-        return `<div class="substituto-form">
-            <input type="text" class="substituto-input" id="sub_${id}" placeholder="Nome do substituto..." onclick="event.stopPropagation()">
-            <button class="btn-substituto" onclick="event.stopPropagation(); submitSubstituto('${id}')" title="Confirmar substituto">Confirmar</button>
-        </div>`;
-    }
-
-    function substitutoInfo(folga) {
-        return folga.substituto ? `<div class="substituto-info">👤 Substituto: <strong>${folga.substituto}</strong></div>` : '';
-    }
-
-    async function submitSubstituto(id) {
-        const input = document.getElementById('sub_' + id);
-        const nome = input ? input.value.trim() : '';
-        if (!nome) { showToast('Informe o nome do substituto!', true); return; }
-
-        const folga = state.folgas.find(f => f.id === id);
-        if (!folga) return;
-        folga.substituto = nome;
-        folga.status = 'pendente';
-        renderAll();
-        await saveState();
-
-        const person = state.team[folga.personIdx];
-        const days = countFolgaDays(folga);
-        const dateLabel = folga.startDate === folga.endDate
-            ? formatDateBR(folga.startDate)
-            : `${formatDateBR(folga.startDate)} a ${formatDateBR(folga.endDate)}`;
-
-        const sent = await sendEmail('nova_folga', {
-            to: EMAIL_CONFIG.barbaraEmail,
-            personName: person.name,
-            substituto: nome,
-            dates: dateLabel,
-            days: days,
-            hours: days * HOURS_PER_DAY,
-            note: folga.note || '',
-            portalURL: EMAIL_CONFIG.portalURL
-        });
-        showToast(sent
-            ? `📧 Substituto definido! Email enviado para Barbara solicitando aprovação.`
-            : `Substituto definido! (email não enviado)`);
-    }
-
-    async function removeFolga(id) {
+    function removeFolga(id) {
         const folga = state.folgas.find(f => f.id === id);
         if (!folga) return;
         state.folgas = state.folgas.filter(f => f.id !== id);
+        saveState();
         renderAll();
-        await saveState();
         showToast('Folga removida.');
     }
 
@@ -1751,33 +1644,35 @@
         list.innerHTML = upcoming.map(f => {
             const p = state.team[f.personIdx];
             const days = countFolgaDays(f);
-            const s = f.status || 'aguardando_substituto';
-            const phUp = getPhoto(p);
-            const photoHTML = phUp
-                ? `<img src="${phUp}">`
+            const photoHTML = p.photo
+                ? `<img src="${p.photo}">`
                 : '👤';
             const dateLabel = f.startDate === f.endDate
                 ? formatDateBR(f.startDate)
                 : `${formatDateBR(f.startDate)} → ${formatDateBR(f.endDate)}`;
 
-            let actionHTML = '';
-            if (s === 'aguardando_substituto') {
-                actionHTML = substitutoForm(f.id);
-            } else if (s === 'pendente') {
-                actionHTML = approvalButtons(f.id);
-            }
+            const status = f.status || 'pendente';
+            const statusLabel = status === 'aprovada' ? 'Aprovada' : status === 'rejeitada' ? 'Rejeitada' : 'Pendente';
+
+            const approvalBtns = status === 'pendente'
+                ? `<div class="approval-actions">
+                       <button class="btn-status approve" onclick="event.stopPropagation(); approveFolga('${f.id}')" title="Aprovar">✓</button>
+                       <button class="btn-status reject" onclick="event.stopPropagation(); rejectFolga('${f.id}')" title="Rejeitar">✕</button>
+                   </div>`
+                : '';
 
             return `
                 <div class="upcoming-item person-${f.personIdx}">
                     <div class="upcoming-avatar">${photoHTML}</div>
                     <div class="upcoming-info">
-                        <div class="upcoming-name">${p.name} ${statusLabel(s)}</div>
+                        <div class="upcoming-name">${p.name} <span class="status-badge ${status}">${statusLabel}</span></div>
                         <div class="upcoming-date">${dateLabel}${f.note ? ' · ' + f.note : ''}</div>
-                        ${substitutoInfo(f)}
-                        ${actionHTML}
                     </div>
-                    <div class="upcoming-hours">-${days * HOURS_PER_DAY}h</div>
-                    <button class="upcoming-remove" onclick="removeFolga('${f.id}')" title="Remover">✕</button>
+                    <div class="upcoming-status-row">
+                        <div class="upcoming-hours">-${days * HOURS_PER_DAY}h</div>
+                        ${approvalBtns}
+                        <button class="upcoming-remove" onclick="removeFolga('${f.id}')" title="Remover">✕</button>
+                    </div>
                 </div>
             `;
         }).join('');
@@ -1893,9 +1788,8 @@
         const colors = ['#6366f1', '#22c55e', '#f59e0b', '#3b82f6'];
         const color = colors[idx];
 
-        const phModal = getPhoto(p);
-        const photoHTML = phModal
-            ? `<img src="${phModal}">`
+        const photoHTML = p.photo
+            ? `<img src="${p.photo}">`
             : '👤';
 
         const statsHTML = `
@@ -1924,38 +1818,28 @@
                 <div class="pm-folga-list">
                     ${folgas.map(f => {
                         const days = countFolgaDays(f);
-                        const s = f.status || 'aguardando_substituto';
                         const dateLabel = f.startDate === f.endDate
                             ? formatDateBR(f.startDate)
                             : `${formatDateBR(f.startDate)} → ${formatDateBR(f.endDate)}`;
-                        let modalActions = '';
-                        if (s === 'aguardando_substituto') {
-                            modalActions = substitutoForm(f.id);
-                        } else if (s === 'pendente') {
-                            modalActions = `<div class="approval-actions">
-                                <button class="btn-approve" onclick="event.stopPropagation(); approveFolgaFromModal('${f.id}', ${idx})" title="Aprovar">✓ Aprovar</button>
-                                <button class="btn-reject" onclick="event.stopPropagation(); rejectFolgaFromModal('${f.id}', ${idx})" title="Rejeitar">✕ Rejeitar</button>
-                            </div>`;
-                        }
+                        const status = f.status || 'pendente';
+                        const statusLabel = status === 'aprovada' ? 'Aprovada' : status === 'rejeitada' ? 'Rejeitada' : 'Pendente';
+                        const approvalBtns = status === 'pendente'
+                            ? `<button class="btn-status approve" onclick="event.stopPropagation(); approveFolga('${f.id}'); showPersonFolgas(${idx})" title="Aprovar">✓ Aprovar</button>
+                               <button class="btn-status reject" onclick="event.stopPropagation(); rejectFolga('${f.id}'); showPersonFolgas(${idx})" title="Rejeitar">✕ Rejeitar</button>`
+                            : '';
                         return `
-                            <div class="pm-folga-item ${s}" style="border-left-color: ${color}">
-                                <div class="pm-folga-top">
-                                    <div>
-                                        <div class="pm-folga-dates">${dateLabel}</div>
-                                        ${f.note ? `<div class="pm-folga-note">${f.note}</div>` : ''}
-                                        ${substitutoInfo(f)}
-                                    </div>
-                                    <div class="pm-folga-right">
-                                        <div>
-                                            <div class="pm-folga-days">${days} dia${days > 1 ? 's' : ''}</div>
-                                            <div class="pm-folga-hours">-${days * HOURS_PER_DAY}h</div>
-                                        </div>
-                                        <button class="pm-folga-remove" onclick="removeFolgaFromModal('${f.id}', ${idx})" title="Remover">✕</button>
-                                    </div>
+                            <div class="pm-folga-item" style="border-left-color: ${color}">
+                                <div>
+                                    <div class="pm-folga-dates">${dateLabel} <span class="status-badge ${status}">${statusLabel}</span></div>
+                                    ${f.note ? `<div class="pm-folga-note">${f.note}</div>` : ''}
+                                    <div class="pm-folga-status">${approvalBtns}</div>
                                 </div>
-                                <div class="pm-folga-status-row">
-                                    ${statusLabel(s)}
-                                    ${modalActions}
+                                <div class="pm-folga-right">
+                                    <div>
+                                        <div class="pm-folga-days">${days} dia${days > 1 ? 's' : ''}</div>
+                                        <div class="pm-folga-hours">-${days * HOURS_PER_DAY}h</div>
+                                    </div>
+                                    <button class="pm-folga-remove" onclick="removeFolgaFromModal('${f.id}', ${idx})" title="Remover">✕</button>
                                 </div>
                             </div>
                         `;
@@ -1979,22 +1863,12 @@
         document.getElementById('modalOverlay').classList.add('active');
     }
 
-    async function removeFolgaFromModal(id, personIdx) {
+    function removeFolgaFromModal(id, personIdx) {
         state.folgas = state.folgas.filter(f => f.id !== id);
+        saveState();
         renderAll();
-        await saveState();
         showPersonFolgas(personIdx);
         showToast('Folga removida.');
-    }
-
-    async function approveFolgaFromModal(id, personIdx) {
-        await approveFolga(id);
-        showPersonFolgas(personIdx);
-    }
-
-    async function rejectFolgaFromModal(id, personIdx) {
-        await rejectFolga(id);
-        showPersonFolgas(personIdx);
     }
 
     // ── TOAST ──
@@ -2023,13 +1897,129 @@
         renderCoordBanner();
     }
 
+    // ── CROP EDITOR ──
+    let cropState = { idx: -1, imgSrc: '', x: 0, y: 0, scale: 1, baseScale: 1, dragging: false, startX: 0, startY: 0 };
+
+    function openCropEditor(idx, imgSrc) {
+        cropState.idx = idx;
+        cropState.imgSrc = imgSrc;
+
+        const img = document.getElementById('cropImage');
+        const area = document.getElementById('cropArea');
+
+        img.onload = () => {
+            const areaSize = 280;
+            const fitScale = Math.max(areaSize / img.naturalWidth, areaSize / img.naturalHeight);
+            cropState.baseScale = fitScale;
+            cropState.scale = fitScale;
+            cropState.x = (areaSize - img.naturalWidth * fitScale) / 2;
+            cropState.y = (areaSize - img.naturalHeight * fitScale) / 2;
+
+            const slider = document.getElementById('cropZoomSlider');
+            slider.min = (fitScale * 0.5).toFixed(4);
+            slider.max = (fitScale * 4).toFixed(4);
+            slider.step = (fitScale * 0.02).toFixed(4);
+            slider.value = fitScale;
+
+            updateCropTransform();
+        };
+        img.src = imgSrc;
+
+        document.getElementById('cropOverlay').classList.add('active');
+
+        area.onpointerdown = (e) => {
+            cropState.dragging = true;
+            cropState.startX = e.clientX - cropState.x;
+            cropState.startY = e.clientY - cropState.y;
+            area.setPointerCapture(e.pointerId);
+        };
+        area.onpointermove = (e) => {
+            if (!cropState.dragging) return;
+            cropState.x = e.clientX - cropState.startX;
+            cropState.y = e.clientY - cropState.startY;
+            updateCropTransform();
+        };
+        area.onpointerup = () => { cropState.dragging = false; };
+    }
+
+    function updateCropTransform() {
+        document.getElementById('cropImage').style.transform =
+            `translate(${cropState.x}px, ${cropState.y}px) scale(${cropState.scale})`;
+    }
+
+    function cropZoom(direction) {
+        const slider = document.getElementById('cropZoomSlider');
+        const min = parseFloat(slider.min);
+        const max = parseFloat(slider.max);
+        const step = (max - min) * 0.05;
+        const newScale = Math.max(min, Math.min(max, cropState.scale + direction * step));
+        slider.value = newScale;
+        cropZoomTo(newScale);
+    }
+
+    function cropZoomTo(val) {
+        const newScale = parseFloat(val);
+        const cx = 140, cy = 140;
+        const ratio = newScale / cropState.scale;
+        cropState.x = cx - ratio * (cx - cropState.x);
+        cropState.y = cy - ratio * (cy - cropState.y);
+        cropState.scale = newScale;
+        updateCropTransform();
+    }
+
+    function closeCropEditor() {
+        document.getElementById('cropOverlay').classList.remove('active');
+    }
+
+    function triggerCropFileInput() {
+        document.getElementById('cropFileInput').click();
+    }
+
+    function handleCropFileSelect(input) {
+        const file = input.files[0];
+        if (!file) return;
+        const reader = new FileReader();
+        reader.onload = (e) => {
+            openCropEditor(cropState.idx, e.target.result);
+        };
+        reader.readAsDataURL(file);
+        input.value = '';
+    }
+
+    function confirmCrop() {
+        const areaSize = 280;
+        const outputSize = 200;
+        const canvas = document.createElement('canvas');
+        canvas.width = outputSize;
+        canvas.height = outputSize;
+        const ctx = canvas.getContext('2d');
+
+        const r = outputSize / areaSize;
+        const img = document.getElementById('cropImage');
+        ctx.drawImage(
+            img,
+            cropState.x * r,
+            cropState.y * r,
+            img.naturalWidth * cropState.scale * r,
+            img.naturalHeight * cropState.scale * r
+        );
+
+        state.team[cropState.idx].photo = canvas.toDataURL('image/jpeg', 0.85);
+        state.team[cropState.idx].photoOriginal = cropState.imgSrc;
+        saveState();
+        renderAll();
+        closeCropEditor();
+        showToast('Foto atualizada!');
+    }
+
     // ── INIT ──
     updateDateDisplay();
-    if (getAdminToken()) { isAdmin = true; updateAdminUI(); }
-    (async () => {
-        state = await loadStateFromServer();
-        renderAll();
-    })();
+    renderAll();
+
+    // Check email config
+    if (EMAIL_CONFIG.scriptURL) {
+        updateEmailStatus('active', 'Notificações por email: ativo');
+    }
 </script>
 </body>
 </html>
