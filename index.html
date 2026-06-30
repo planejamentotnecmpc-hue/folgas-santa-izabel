@@ -1818,7 +1818,7 @@
         folga.status = 'pendente';
         renderAll();
         await saveState();
-        showPersonFolgas(personIdx);
+        showPersonFolgas(personIdx, true);
 
         const person = state.team[folga.personIdx];
         const days = countFolgaDays(folga);
@@ -2035,8 +2035,8 @@
         document.querySelector('.btn-cancel').textContent = 'Cancelar';
     }
 
-    function showPersonFolgas(idx) {
-        if (event && (event.target.tagName === 'INPUT' || event.target.tagName === 'BUTTON' || event.target.closest('.avatar'))) return;
+    function showPersonFolgas(idx, force = false) {
+        if (!force && event && (event.target.tagName === 'INPUT' || event.target.tagName === 'BUTTON' || event.target.closest('.avatar'))) return;
 
         const p = state.team[idx];
         const folgas = getPersonFolgas(idx).sort((a, b) => a.startDate.localeCompare(b.startDate));
@@ -2135,18 +2135,18 @@
         state.folgas = state.folgas.filter(f => f.id !== id);
         renderAll();
         await saveState();
-        showPersonFolgas(personIdx);
+        showPersonFolgas(personIdx, true);
         showToast('Folga removida.');
     }
 
     async function approveFolgaFromModal(id, personIdx) {
         await approveFolga(id);
-        showPersonFolgas(personIdx);
+        showPersonFolgas(personIdx, true);
     }
 
     async function rejectFolgaFromModal(id, personIdx) {
         await rejectFolga(id);
-        showPersonFolgas(personIdx);
+        showPersonFolgas(personIdx, true);
     }
 
     // ── TOAST ──
