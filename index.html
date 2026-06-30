@@ -1266,9 +1266,20 @@
         };
     }
 
+    const SAVE_TS_KEY = 'folgas_last_save_ts';
+
     async function loadStateFromServer() {
-        // Lê direto do GitHub API — funciona sem token (repo público)
-        // O GAS escreve neste arquivo, então sempre reflete o estado mais recente
+        // Se salvou há menos de 60s neste browser, o GAS pode ainda estar escrevendo
+        // no GitHub — usa localStorage que já tem o dado atualizado
+        const lastSave = parseInt(localStorage.getItem(SAVE_TS_KEY) || '0');
+        if (Date.now() - lastSave < 60000) {
+            try {
+                const cached = localStorage.getItem(CACHE_KEY);
+                if (cached) return JSON.parse(cached);
+            } catch(e) {}
+        }
+
+        // Lê do GitHub API (repo público, sem token necessário)
         const headers = { 'Accept': 'application/vnd.github.v3+json' };
         const token = getAdminToken();
         if (token) headers['Authorization'] = `Bearer ${token}`;
@@ -1301,6 +1312,7 @@
 
     async function saveState() {
         localStorage.setItem(CACHE_KEY, JSON.stringify(state));
+        localStorage.setItem(SAVE_TS_KEY, Date.now().toString());
 
         // Todos os usuários: GAS recebe e escreve no GitHub com o token do servidor
         if (EMAIL_CONFIG.scriptURL) {
