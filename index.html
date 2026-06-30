@@ -1267,49 +1267,30 @@
     }
 
     async function loadStateFromServer() {
-        // 1. Tenta GAS (estado compartilhado — funciona para todos os usuários)
-        if (EMAIL_CONFIG.scriptURL) {
-            try {
-                const resp = await fetch(EMAIL_CONFIG.scriptURL + '?action=get_state');
-                if (resp.ok) {
-                    const data = await resp.json();
-                    if (data && data.team) {
-                        localStorage.setItem(CACHE_KEY, JSON.stringify(data));
-                        return data;
-                    }
-                }
-            } catch(e) { console.error('GAS load error:', e); }
-        }
-
-        // 2. Se admin, tenta GitHub API
+        // Lê direto do GitHub API — funciona sem token (repo público)
+        // O GAS escreve neste arquivo, então sempre reflete o estado mais recente
+        const headers = { 'Accept': 'application/vnd.github.v3+json' };
         const token = getAdminToken();
-        if (token) {
-            try {
-                const resp = await fetch(`https://api.github.com/repos/${GITHUB_OWNER}/${GITHUB_REPO}/contents/data.json`, {
-                    headers: { 'Authorization': `Bearer ${token}`, 'Accept': 'application/vnd.github.v3+json' }
-                });
-                if (resp.ok) {
-                    const meta = await resp.json();
-                    fileSha = meta.sha;
-                    const decoded = decodeURIComponent(escape(atob(meta.content.replace(/\n/g, ''))));
-                    const data = JSON.parse(decoded);
+        if (token) headers['Authorization'] = `Bearer ${token}`;
+
+        try {
+            const resp = await fetch(
+                `https://api.github.com/repos/${GITHUB_OWNER}/${GITHUB_REPO}/contents/data.json`,
+                { headers }
+            );
+            if (resp.ok) {
+                const meta = await resp.json();
+                fileSha = meta.sha;
+                const decoded = decodeURIComponent(escape(atob(meta.content.replace(/\n/g, ''))));
+                const data = JSON.parse(decoded);
+                if (data && data.team) {
                     localStorage.setItem(CACHE_KEY, JSON.stringify(data));
                     return data;
                 }
-            } catch(e) { console.error('GitHub API load error:', e); }
-        }
-
-        // 3. Tenta data.json público
-        try {
-            const resp = await fetch('data.json?t=' + Date.now());
-            if (resp.ok) {
-                const data = await resp.json();
-                localStorage.setItem(CACHE_KEY, JSON.stringify(data));
-                return data;
             }
-        } catch(e) {}
+        } catch(e) { console.error('GitHub API load error:', e); }
 
-        // 4. Cache local
+        // Fallback: cache local
         try {
             const cached = localStorage.getItem(CACHE_KEY);
             if (cached) return JSON.parse(cached);
@@ -1321,7 +1302,7 @@
     async function saveState() {
         localStorage.setItem(CACHE_KEY, JSON.stringify(state));
 
-        // Salva no GAS (funciona para todos, sem token)
+        // Todos os usuários: GAS recebe e escreve no GitHub com o token do servidor
         if (EMAIL_CONFIG.scriptURL) {
             const gasState = {
                 team: state.team.map(p => ({ name: p.name, role: p.role, balance: p.balance, email: p.email || null })),
@@ -1334,7 +1315,7 @@
             }).catch(() => {});
         }
 
-        // Admin: também sincroniza no GitHub
+        // Admin: também escreve direto no GitHub (mais rápido)
         if (isAdmin) await syncToGitHub();
     }
 
