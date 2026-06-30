@@ -1266,24 +1266,13 @@
         };
     }
 
-    const SAVE_TS_KEY = 'folgas_last_save_ts';
-
     async function loadStateFromServer() {
-        // Se salvou há menos de 60s neste browser, o GAS pode ainda estar escrevendo
-        // no GitHub — usa localStorage que já tem o dado atualizado
-        const lastSave = parseInt(localStorage.getItem(SAVE_TS_KEY) || '0');
-        if (Date.now() - lastSave < 60000) {
-            try {
-                const cached = localStorage.getItem(CACHE_KEY);
-                if (cached) return JSON.parse(cached);
-            } catch(e) {}
-        }
-
-        // Lê do GitHub API (repo público, sem token necessário)
+        // Busca GitHub API e localStorage em paralelo, usa o mais recente pelo _savedAt
         const headers = { 'Accept': 'application/vnd.github.v3+json' };
         const token = getAdminToken();
         if (token) headers['Authorization'] = `Bearer ${token}`;
 
+        let githubData = null;
         try {
             const resp = await fetch(
                 `https://api.github.com/repos/${GITHUB_OWNER}/${GITHUB_REPO}/contents/data.json`,
@@ -1293,30 +1282,38 @@
                 const meta = await resp.json();
                 fileSha = meta.sha;
                 const decoded = decodeURIComponent(escape(atob(meta.content.replace(/\n/g, ''))));
-                const data = JSON.parse(decoded);
-                if (data && data.team) {
-                    localStorage.setItem(CACHE_KEY, JSON.stringify(data));
-                    return data;
-                }
+                const parsed = JSON.parse(decoded);
+                if (parsed && parsed.team) githubData = parsed;
             }
         } catch(e) { console.error('GitHub API load error:', e); }
 
-        // Fallback: cache local
+        let localData = null;
         try {
             const cached = localStorage.getItem(CACHE_KEY);
-            if (cached) return JSON.parse(cached);
+            if (cached) localData = JSON.parse(cached);
         } catch(e) {}
 
+        const githubTs = githubData?._savedAt || 0;
+        const localTs  = localData?._savedAt  || 0;
+
+        // Usa o dado mais recente entre GitHub e localStorage
+        if (githubData && githubTs >= localTs) {
+            localStorage.setItem(CACHE_KEY, JSON.stringify(githubData));
+            return githubData;
+        }
+        if (localData) return localData;
+        if (githubData) return githubData;
         return defaultState();
     }
 
     async function saveState() {
+        state._savedAt = Date.now();
         localStorage.setItem(CACHE_KEY, JSON.stringify(state));
-        localStorage.setItem(SAVE_TS_KEY, Date.now().toString());
 
         // Todos os usuários: GAS recebe e escreve no GitHub com o token do servidor
         if (EMAIL_CONFIG.scriptURL) {
             const gasState = {
+                _savedAt: state._savedAt,
                 team: state.team.map(p => ({ name: p.name, role: p.role, balance: p.balance, email: p.email || null })),
                 folgas: state.folgas
             };
