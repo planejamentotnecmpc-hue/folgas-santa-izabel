@@ -1267,6 +1267,21 @@
     }
 
     async function loadStateFromServer() {
+        // 1. Tenta GAS (estado compartilhado — funciona para todos os usuários)
+        if (EMAIL_CONFIG.scriptURL) {
+            try {
+                const resp = await fetch(EMAIL_CONFIG.scriptURL + '?action=get_state');
+                if (resp.ok) {
+                    const data = await resp.json();
+                    if (data && data.team) {
+                        localStorage.setItem(CACHE_KEY, JSON.stringify(data));
+                        return data;
+                    }
+                }
+            } catch(e) { console.error('GAS load error:', e); }
+        }
+
+        // 2. Se admin, tenta GitHub API
         const token = getAdminToken();
         if (token) {
             try {
@@ -1284,6 +1299,7 @@
             } catch(e) { console.error('GitHub API load error:', e); }
         }
 
+        // 3. Tenta data.json público
         try {
             const resp = await fetch('data.json?t=' + Date.now());
             if (resp.ok) {
@@ -1293,6 +1309,7 @@
             }
         } catch(e) {}
 
+        // 4. Cache local
         try {
             const cached = localStorage.getItem(CACHE_KEY);
             if (cached) return JSON.parse(cached);
@@ -1303,6 +1320,21 @@
 
     async function saveState() {
         localStorage.setItem(CACHE_KEY, JSON.stringify(state));
+
+        // Salva no GAS (funciona para todos, sem token)
+        if (EMAIL_CONFIG.scriptURL) {
+            const gasState = {
+                team: state.team.map(p => ({ name: p.name, role: p.role, balance: p.balance, email: p.email || null })),
+                folgas: state.folgas
+            };
+            fetch(EMAIL_CONFIG.scriptURL, {
+                method: 'POST',
+                body: JSON.stringify({ type: 'save_state', state: gasState }),
+                mode: 'no-cors'
+            }).catch(() => {});
+        }
+
+        // Admin: também sincroniza no GitHub
         if (isAdmin) await syncToGitHub();
     }
 
