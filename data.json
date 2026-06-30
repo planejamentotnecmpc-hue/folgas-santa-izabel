@@ -49,8 +49,8 @@
             "startDate": "2026-07-27",
             "endDate": "2026-07-31",
             "note": "Folga Programada - Utilização do banco de horas",
-            "substituto": "",
-            "status": "aguardando_substituto"
+            "substituto": "Sem substituto.",
+            "status": "pendente"
         },
         {
             "id": "mqs77qe4h15sm",
