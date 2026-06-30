@@ -1310,8 +1310,11 @@
         state._savedAt = Date.now();
         localStorage.setItem(CACHE_KEY, JSON.stringify(state));
 
-        // Todos os usuários: GAS recebe e escreve no GitHub com o token do servidor
-        if (EMAIL_CONFIG.scriptURL) {
+        if (isAdmin) {
+            // Admin escreve direto no GitHub (mais rápido e confiável)
+            await syncToGitHub();
+        } else if (EMAIL_CONFIG.scriptURL) {
+            // Não-admin: GAS recebe e escreve no GitHub com o token do servidor
             const gasState = {
                 _savedAt: state._savedAt,
                 team: state.team.map(p => ({ name: p.name, role: p.role, balance: p.balance, email: p.email || null })),
@@ -1323,9 +1326,6 @@
                 mode: 'no-cors'
             }).catch(() => {});
         }
-
-        // Admin: também escreve direto no GitHub (mais rápido)
-        if (isAdmin) await syncToGitHub();
     }
 
     // ── ADMIN / GITHUB SYNC ──
@@ -1393,6 +1393,7 @@
             if (!fileSha) fileSha = await fetchFileSha();
 
             const exportState = {
+                _savedAt: state._savedAt,
                 team: state.team.map(p => ({
                     name: p.name, role: p.role, balance: p.balance, photo: p.photo
                 })),
