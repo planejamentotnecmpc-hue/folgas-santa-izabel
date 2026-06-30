@@ -1800,6 +1800,47 @@
         </div>`;
     }
 
+    function substitutoFormModal(id, personIdx) {
+        return `<div class="substituto-form">
+            <input type="text" class="substituto-input" id="subm_${id}" placeholder="Nome do substituto..." onclick="event.stopPropagation()">
+            <button class="btn-substituto" onclick="event.stopPropagation(); submitSubstitutoModal('${id}', ${personIdx})" title="Confirmar substituto">Confirmar</button>
+        </div>`;
+    }
+
+    async function submitSubstitutoModal(id, personIdx) {
+        const input = document.getElementById('subm_' + id);
+        const nome = input ? input.value.trim() : '';
+        if (!nome) { showToast('Informe o nome do substituto!', true); return; }
+
+        const folga = state.folgas.find(f => f.id === id);
+        if (!folga) return;
+        folga.substituto = nome;
+        folga.status = 'pendente';
+        renderAll();
+        await saveState();
+        showPersonFolgas(personIdx);
+
+        const person = state.team[folga.personIdx];
+        const days = countFolgaDays(folga);
+        const dateLabel = folga.startDate === folga.endDate
+            ? formatDateBR(folga.startDate)
+            : `${formatDateBR(folga.startDate)} a ${formatDateBR(folga.endDate)}`;
+
+        const sent = await sendEmail('nova_folga', {
+            to: EMAIL_CONFIG.barbaraEmail,
+            personName: person.name,
+            substituto: nome,
+            dates: dateLabel,
+            days: days,
+            hours: days * HOURS_PER_DAY,
+            note: folga.note || '',
+            portalURL: EMAIL_CONFIG.portalURL
+        });
+        showToast(sent
+            ? `📧 Substituto definido! Email enviado para Barbara solicitando aprovação.`
+            : `Substituto definido! (email não enviado)`);
+    }
+
     function substitutoInfo(folga) {
         return folga.substituto ? `<div class="substituto-info">👤 Substituto: <strong>${folga.substituto}</strong></div>` : '';
     }
@@ -2041,7 +2082,7 @@
                             : `${formatDateBR(f.startDate)} → ${formatDateBR(f.endDate)}`;
                         let modalActions = '';
                         if (s === 'aguardando_substituto') {
-                            modalActions = substitutoForm(f.id);
+                            modalActions = substitutoFormModal(f.id, idx);
                         } else if (s === 'pendente') {
                             modalActions = `<div class="approval-actions">
                                 <button class="btn-approve" onclick="event.stopPropagation(); approveFolgaFromModal('${f.id}', ${idx})" title="Aprovar">✓ Aprovar</button>
