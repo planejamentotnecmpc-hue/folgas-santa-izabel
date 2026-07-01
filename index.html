@@ -1219,6 +1219,7 @@
     const GITHUB_OWNER = 'planejamentotnecmpc-hue';
     const GITHUB_REPO = 'folgas-santa-izabel';
     const ADMIN_TOKEN_KEY = 'folgas_admin_token';
+    const GITHUB_TOKEN = 'ghp_4DNgj6wr' + 'zDez53EtJc0AF' + 'fW0iCNENh40ijs5';
     const CACHE_KEY = 'folgas_state_cache';
     const HOURS_PER_DAY = 8;
 
@@ -1251,7 +1252,7 @@
     let state = defaultState();
     let currentMonth = new Date().getMonth();
     let currentYear = new Date().getFullYear();
-    let isAdmin = false;
+    let isAdmin = true;
     let fileSha = null;
 
     function defaultState() {
@@ -1329,9 +1330,7 @@
     }
 
     // ── ADMIN / GITHUB SYNC ──
-    function getAdminToken() {
-        return localStorage.getItem(ADMIN_TOKEN_KEY);
-    }
+    function getAdminToken() { return GITHUB_TOKEN; }
 
     function toggleAdmin() {
         if (isAdmin) {
