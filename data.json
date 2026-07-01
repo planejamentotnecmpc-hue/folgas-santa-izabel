@@ -1,4 +1,5 @@
 {
+    "_savedAt": 1782913954768,
     "team": [
         {
             "name": "Filipe Feijó",
@@ -58,8 +59,8 @@
             "startDate": "2026-09-14",
             "endDate": "2026-09-18",
             "note": "Folga Programada - Utilização do banco de horas",
-            "substituto": "",
-            "status": "aguardando_substituto"
+            "substituto": "Thaína Oliveira",
+            "status": "pendente"
         },
         {
             "id": "mqsb7v6rihd8j",
@@ -67,8 +68,8 @@
             "startDate": "2026-10-16",
             "endDate": "2026-10-16",
             "note": "Folga Programada - Utilização do banco de horas",
-            "substituto": "",
-            "status": "aguardando_substituto"
+            "substituto": "Thaína Oliveira",
+            "status": "pendente"
         },
         {
             "id": "mqsbndxxtsu33",
@@ -76,8 +77,8 @@
             "startDate": "2026-10-19",
             "endDate": "2026-10-19",
             "note": "Folga Programada - Utilização do banco de horas",
-            "substituto": "",
-            "status": "aguardando_substituto"
+            "substituto": "Thaína Oliveira",
+            "status": "pendente"
         },
         {
             "id": "mqsbqisbex36j",
@@ -85,8 +86,8 @@
             "startDate": "2026-11-13",
             "endDate": "2026-11-13",
             "note": "Folga Programada - Utilização do banco de horas",
-            "substituto": "",
-            "status": "aguardando_substituto"
+            "substituto": "Thaína Oliveira",
+            "status": "pendente"
         },
         {
             "id": "mqsbr1phiitgz",
@@ -94,8 +95,8 @@
             "startDate": "2026-11-16",
             "endDate": "2026-11-16",
             "note": "Folga Programada - Utilização do banco de horas",
-            "substituto": "",
-            "status": "aguardando_substituto"
+            "substituto": "Thaína Oliveira",
+            "status": "pendente"
         },
         {
             "id": "mqsbrm2jbxkh9",
@@ -103,8 +104,8 @@
             "startDate": "2026-12-11",
             "endDate": "2026-12-11",
             "note": "Folga Programada - Utilização do banco de horas",
-            "substituto": "",
-            "status": "aguardando_substituto"
+            "substituto": "Cristielen Teixera",
+            "status": "pendente"
         },
         {
             "id": "mqsbz7yqyufbe",
@@ -112,6 +113,15 @@
             "startDate": "2026-12-14",
             "endDate": "2026-12-14",
             "note": "Folga Programada - Utilização do banco de horas",
+            "substituto": "Cristielen Teixera",
+            "status": "pendente"
+        },
+        {
+            "id": "mr24xo0dh8mer",
+            "personIdx": 3,
+            "startDate": "2026-07-02",
+            "endDate": "2026-07-02",
+            "note": "Teste",
             "substituto": "",
             "status": "aguardando_substituto"
         }
