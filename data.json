@@ -1,5 +1,5 @@
 {
-    "_savedAt": 1782920368608,
+    "_savedAt": 1782993913798,
     "team": [
         {
             "name": "Filipe Feijó",
@@ -115,6 +115,15 @@
             "note": "Folga Programada - Utilização do banco de horas",
             "substituto": "Cristielen Teixera",
             "status": "aprovada"
+        },
+        {
+            "id": "mr3gjgsjeyngs",
+            "personIdx": 3,
+            "startDate": "2026-07-16",
+            "endDate": "2026-07-16",
+            "note": "Consulta e vacina do José - Utilização do banco de horas",
+            "substituto": "",
+            "status": "aguardando_substituto"
         }
     ]
 }
