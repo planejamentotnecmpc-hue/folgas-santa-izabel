@@ -1,5 +1,5 @@
 {
-    "_savedAt": 1782999784810,
+    "_savedAt": 1782999790311,
     "team": [
         {
             "name": "Filipe Feijó",
@@ -140,8 +140,8 @@
             "startDate": "2026-11-19",
             "endDate": "2026-11-19",
             "note": "Folga Programada - Utilização do banco de horas",
-            "substituto": "",
-            "status": "aguardando_substituto"
+            "substituto": "Sem substituição",
+            "status": "pendente"
         },
         {
             "id": "mr3gu4dxobo7v",
