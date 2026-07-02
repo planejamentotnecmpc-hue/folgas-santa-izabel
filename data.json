@@ -1,5 +1,5 @@
 {
-    "_savedAt": 1782993913798,
+    "_savedAt": 1782994073898,
     "team": [
         {
             "name": "Filipe Feijó",
@@ -122,6 +122,15 @@
             "startDate": "2026-07-16",
             "endDate": "2026-07-16",
             "note": "Consulta e vacina do José - Utilização do banco de horas",
+            "substituto": "",
+            "status": "aguardando_substituto"
+        },
+        {
+            "id": "mr3gmwbriot4i",
+            "personIdx": 3,
+            "startDate": "2026-08-14",
+            "endDate": "2026-08-14",
+            "note": "Folga Programada - Utilização do banco de horas",
             "substituto": "",
             "status": "aguardando_substituto"
         }
