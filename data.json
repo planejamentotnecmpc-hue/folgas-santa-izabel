@@ -1,5 +1,5 @@
 {
-    "_savedAt": 1783448791300,
+    "_savedAt": 1783448846817,
     "team": [
         {
             "name": "Filipe Feijó",
@@ -122,6 +122,24 @@
             "startDate": "2026-10-02",
             "endDate": "2026-10-05",
             "note": "",
+            "substituto": "",
+            "status": "aguardando_substituto"
+        },
+        {
+            "id": "mrazd5zc27pe3",
+            "personIdx": 1,
+            "startDate": "2026-07-24",
+            "endDate": "2026-07-31",
+            "note": "Utilização do banco de horas",
+            "substituto": "",
+            "status": "aguardando_substituto"
+        },
+        {
+            "id": "mraze9ct3429x",
+            "personIdx": 0,
+            "startDate": "2026-08-18",
+            "endDate": "2026-08-21",
+            "note": "Utilização do banco de horas",
             "substituto": "",
             "status": "aguardando_substituto"
         }
