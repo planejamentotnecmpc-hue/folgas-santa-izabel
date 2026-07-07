@@ -1,5 +1,5 @@
 {
-    "_savedAt": 1783448572268,
+    "_savedAt": 1783448573381,
     "team": [
         {
             "name": "Filipe Feijó",
@@ -78,15 +78,6 @@
             "endDate": "2026-10-19",
             "note": "Folga Programada - Utilização do banco de horas",
             "substituto": "Thaína Oliveira",
-            "status": "aprovada"
-        },
-        {
-            "id": "mqsbrm2jbxkh9",
-            "personIdx": 1,
-            "startDate": "2026-12-11",
-            "endDate": "2026-12-11",
-            "note": "Folga Programada - Utilização do banco de horas",
-            "substituto": "Cristielen Teixera",
             "status": "aprovada"
         },
         {
