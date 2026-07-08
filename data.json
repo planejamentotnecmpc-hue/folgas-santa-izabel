@@ -1,5 +1,5 @@
 {
-    "_savedAt": 1783512013577,
+    "_savedAt": 1783512133672,
     "team": [
         {
             "name": "Filipe Feijó",
@@ -131,8 +131,8 @@
             "startDate": "2026-07-24",
             "endDate": "2026-07-31",
             "note": "Utilização do banco de horas",
-            "substituto": "",
-            "status": "aguardando_substituto"
+            "substituto": "Shaiene Dias",
+            "status": "pendente"
         },
         {
             "id": "mraze9ct3429x",
