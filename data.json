@@ -1,5 +1,5 @@
 {
-    "_savedAt": 1783539083670,
+    "_savedAt": 1783539114889,
     "team": [
         {
             "name": "Filipe Feijó",
@@ -141,7 +141,7 @@
             "endDate": "2026-08-21",
             "note": "Utilização do banco de horas",
             "substituto": "Marcus Vinicius",
-            "status": "pendente"
+            "status": "aprovada"
         }
     ]
 }
