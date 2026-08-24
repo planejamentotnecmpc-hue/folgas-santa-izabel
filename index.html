@@ -338,7 +338,7 @@
 
         .card-stats-grid {
             display: grid;
-            grid-template-columns: 1fr 1fr;
+            grid-template-columns: 1fr 1fr 1fr;
             gap: 8px;
             margin-top: 12px;
         }
@@ -1455,12 +1455,22 @@
         return days;
     }
 
+    function getPersonUsed(idx) {
+        const today = formatDate(new Date());
+        return getPersonFolgas(idx)
+            .filter(f => f.endDate < today)
+            .reduce((sum, f) => sum + countFolgaDays(f) * HOURS_PER_DAY, 0);
+    }
+
     function getPersonCommitted(idx) {
-        return getPersonFolgas(idx).reduce((sum, f) => sum + countFolgaDays(f) * HOURS_PER_DAY, 0);
+        const today = formatDate(new Date());
+        return getPersonFolgas(idx)
+            .filter(f => f.endDate >= today)
+            .reduce((sum, f) => sum + countFolgaDays(f) * HOURS_PER_DAY, 0);
     }
 
     function getPersonAvailable(idx) {
-        return state.team[idx].balance - getPersonCommitted(idx);
+        return state.team[idx].balance - getPersonUsed(idx) - getPersonCommitted(idx);
     }
 
     // ── RENDER TEAM CARDS ──
@@ -1475,6 +1485,7 @@
         ];
 
         grid.innerHTML = state.team.map((p, i) => {
+            const used = getPersonUsed(i);
             const committed = getPersonCommitted(i);
             const available = getPersonAvailable(i);
             const folgaCount = getPersonFolgas(i).length;
@@ -1514,6 +1525,10 @@
                         </div>
                     </div>
                     <div class="card-stats-grid">
+                        <div class="card-stat">
+                            <div class="card-stat-val" style="color: var(--amber)">${used}h</div>
+                            <div class="card-stat-label">Utilizadas</div>
+                        </div>
                         <div class="card-stat">
                             <div class="card-stat-val" style="color: var(--red)">${committed}h</div>
                             <div class="card-stat-label">Comprometido</div>
@@ -2062,6 +2077,7 @@
 
         const p = state.team[idx];
         const folgas = getPersonFolgas(idx).sort((a, b) => a.startDate.localeCompare(b.startDate));
+        const used = getPersonUsed(idx);
         const committed = getPersonCommitted(idx);
         const available = getPersonAvailable(idx);
         const colors = ['#6366f1', '#22c55e', '#f59e0b', '#3b82f6'];
@@ -2073,10 +2089,14 @@
             : '👤';
 
         const statsHTML = `
-            <div class="person-modal-stats">
+            <div class="person-modal-stats" style="grid-template-columns: repeat(4, 1fr);">
                 <div class="pm-stat">
                     <div class="pm-stat-val" style="color: ${color}">${p.balance}h</div>
                     <div class="pm-stat-label">Saldo Total</div>
+                </div>
+                <div class="pm-stat">
+                    <div class="pm-stat-val" style="color: var(--amber)">${used}h</div>
+                    <div class="pm-stat-label">Utilizadas</div>
                 </div>
                 <div class="pm-stat">
                     <div class="pm-stat-val" style="color: var(--red)">${committed}h</div>
