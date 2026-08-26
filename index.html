@@ -1723,11 +1723,6 @@
         const hours = days * HOURS_PER_DAY;
         const available = getPersonAvailable(personIdx);
 
-        if (hours > available) {
-            showToast(`Saldo insuficiente! ${state.team[personIdx].name} tem ${available}h disponível, precisa de ${hours}h.`, true);
-            return;
-        }
-
         state.folgas.push(folga);
         renderAll();
         await saveState();
@@ -1737,7 +1732,12 @@
         document.getElementById('formDateEnd').value = '';
         document.getElementById('formNote').value = '';
 
-        showToast(`Folga agendada: ${state.team[personIdx].name} — ${days} dia(s) (${hours}h)`);
+        if (hours > available) {
+            const deficit = hours - available;
+            showToast(`⚠️ Folga agendada com saldo negativo! ${state.team[personIdx].name} ficará ${deficit}h no vermelho.`, true);
+        } else {
+            showToast(`Folga agendada: ${state.team[personIdx].name} — ${days} dia(s) (${hours}h)`);
+        }
 
         const person = state.team[personIdx];
         const dateLabel = folga.startDate === folga.endDate
