@@ -1,5 +1,5 @@
 {
-    "_savedAt": 1788977119485,
+    "_savedAt": 1788977138243,
     "team": [
         {
             "name": "Filipe Feijó",
@@ -196,15 +196,6 @@
             "note": "",
             "substituto": "Sem substituto. Folga já utilizada",
             "status": "aprovada"
-        },
-        {
-            "id": "mta43iyecvx9g",
-            "personIdx": 1,
-            "startDate": "2026-09-01",
-            "endDate": "2026-09-04",
-            "note": "",
-            "substituto": "Shaiene",
-            "status": "rejeitada"
         },
         {
             "id": "mtacwpya7nlzm",
