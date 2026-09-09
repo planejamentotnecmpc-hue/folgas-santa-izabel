@@ -1,5 +1,5 @@
 {
-    "_savedAt": 1788961397094,
+    "_savedAt": 1788977119485,
     "team": [
         {
             "name": "Filipe Feijó",
@@ -204,7 +204,7 @@
             "endDate": "2026-09-04",
             "note": "",
             "substituto": "Shaiene",
-            "status": "pendente"
+            "status": "rejeitada"
         },
         {
             "id": "mtacwpya7nlzm",
@@ -222,7 +222,7 @@
             "endDate": "2026-09-21",
             "note": "Utilização do banco de horas",
             "substituto": "Sem substituto.",
-            "status": "aprovada"
+            "status": "pendente"
         }
     ]
 }
