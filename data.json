@@ -1,5 +1,5 @@
 {
-    "_savedAt": 1789990807953,
+    "_savedAt": 1789990817689,
     "team": [
         {
             "name": "Filipe Feijó",
@@ -239,8 +239,8 @@
             "startDate": "2026-10-22",
             "endDate": "2026-10-22",
             "note": "",
-            "substituto": "",
-            "status": "aguardando_substituto"
+            "substituto": "Sem substituto",
+            "status": "pendente"
         },
         {
             "id": "mtuh3hjgw97pp",
