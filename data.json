@@ -1,5 +1,5 @@
 {
-    "_savedAt": 1791239140139,
+    "_savedAt": 1791313792147,
     "team": [
         {
             "name": "Filipe Feijó",
@@ -241,6 +241,15 @@
             "note": "",
             "substituto": "Sem substituto",
             "status": "aprovada"
+        },
+        {
+            "id": "mux1zc0g5mivu",
+            "personIdx": 2,
+            "startDate": "2026-12-31",
+            "endDate": "2026-12-31",
+            "note": "4 horas",
+            "substituto": "",
+            "status": "aguardando_substituto"
         }
     ]
 }
